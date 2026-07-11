@@ -1,4 +1,4 @@
-/* Lífsteinn service worker — cache generation: lifsteinn-v1
+/* Lífsteinn service worker — cache generation: lifsteinn-v2 (bumped to release restyled icons/favicons)
    Strategy (as agreed):
    - Navigations: network-first with a 3s timeout, falling back to the cached
      app shell, so deploys show up immediately but offline still works.
@@ -7,7 +7,7 @@
    - activate deletes every cache that isn't ours, which purges any cache
      left behind by older versions of the app regardless of its name. */
 
-const CACHE = 'lifsteinn-v1';
+const CACHE = 'lifsteinn-v2';
 const RUNTIME = 'lifsteinn-rt-v1';
 const SHELL = './index.html';
 const PRECACHE = [
