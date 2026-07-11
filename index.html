@@ -337,7 +337,7 @@
   .dow{border-bottom:1px solid var(--mist);padding-bottom:5px;margin-bottom:6px}
   input,select{font-family:'Winky Sans',system-ui,sans-serif;font-weight:500}
   .addrow input{font-family:'Winky Sans',system-ui,sans-serif}
-  #h-notes,#newtask,#h-project{font-family:'Winky Rough','Winky Sans',cursive;font-weight:400;font-size:15.5px;line-height:1.55}
+  #h-notes,#newtask,#h-project,#ed-note,#ed-proj{font-family:'Winky Rough','Winky Sans',cursive;font-weight:400;font-size:15.5px;line-height:1.55}
   #journal .tn{font-family:'Winky Rough','Winky Sans',cursive;font-size:15px;line-height:1.6}
   #journal .tn small{font-family:'Winky Sans',sans-serif;font-weight:600;display:block;color:var(--mut)}
   .todayhero{text-align:center;margin:4px 0 12px}
@@ -467,6 +467,7 @@
     </div>
     <div class="card">
       <h2>⚡ Quick add</h2>
+      <div class="combos" id="freqfoods" style="margin:0 0 8px"></div>
       <div class="addrow" style="margin-top:0">
         <button class="mini" id="copyyest" style="flex:1">⟳ Copy yesterday</button>
         <button class="mini" id="savecombo" style="flex:1">💾 Save today as combo</button>
@@ -476,6 +477,13 @@
     <div class="card">
       <h2>🧾 Today's log <span class="sub" id="foodkcal"></span></h2>
       <div id="meallist"><div class="sub">Nothing logged yet today.</div></div>
+      <div class="addrow">
+        <button class="mini" id="photobtn">📷 Add meal photo</button>
+        <span class="sub" id="photocount" style="align-self:center"></span>
+        <input type="file" id="photofile" accept="image/*" style="display:none">
+      </div>
+      <div id="photorow" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px"></div>
+      <div class="gentle">Photos are held for one week, woven into Gem Day's card, then released from storage. 📷🧵</div>
     </div>
     <div class="card">
       <details>
@@ -534,7 +542,9 @@
       <button class="bigbtn" id="fastbtn">Start fast</button>
       <div class="addrow" style="justify-content:center">
         <button class="mini" id="fastflip">⇅ count up / down</button>
+        <button class="mini" id="fastcal">📅 end → calendar</button>
       </div>
+      <div class="gentle">Goal alerts chime while the app is open — for a reminder that works with the app closed, send the end time to your calendar. 📅</div>
       <details>
         <summary>Custom end time</summary>
         <div class="addrow">
@@ -603,6 +613,11 @@
       <div id="chart-fast"></div>
       <div id="chart-steps"></div>
     </div>
+    <div class="card" id="insightscard" style="display:none">
+      <h2>🔭 Patterns <span class="sub">what your threads say together</span></h2>
+      <div id="insights"></div>
+      <div class="gentle">Patterns appear once enough days are woven — observations, not verdicts.</div>
+    </div>
     <div class="card">
       <h2>✍🏽 Journal archive</h2>
       <div id="journal"></div>
@@ -646,6 +661,7 @@
       <div class="addrow" style="margin-top:0">
         <button class="primary" id="exportbtn" style="flex:1">Export backup</button>
         <button class="mini" id="importbtn" style="flex:1">Import backup</button>
+        <button class="mini" id="csvbtn" style="flex:1">Export CSV 📊</button>
         <input type="file" id="importfile" accept=".json,application/json" style="display:none">
       </div>
       <div class="gentle">Your data lives only in this browser. Export a backup before switching phones, clearing the cache, or moving countries. 🧳 (Keep backup files private — never upload them to a public repo.)</div>
@@ -678,6 +694,7 @@
         <button class="mini" id="cyc-add">Add</button>
       </div>
       <div class="delta" id="cyc-stats"></div>
+      <div class="addrow" id="symprow" style="flex-wrap:wrap"></div>
       <div id="cyclist"></div>
       <div class="gentle">With PCOS, cycle regularity is one of the clearest signs metabolic changes are working — and exactly what a doctor will ask about. Tap ✕ to unmark a day.</div>
     </div>
@@ -834,9 +851,10 @@ document.querySelectorAll('nav button').forEach(b=>{
     document.querySelectorAll('nav button').forEach(x=>x.classList.remove('on'));
     document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
     b.classList.add('on'); $('tab-'+b.dataset.tab).classList.add('active');
-    if(b.dataset.tab==='cal'){ renderCalendar(); renderFieldCharts(); renderJournal(); }
+    if(b.dataset.tab==='cal'){ renderCalendar(); renderFieldCharts(); renderJournal(); renderInsights(); }
     if(b.dataset.tab==='loom'){ renderGoals(); renderFunds(); renderCountdowns(); }
-    if(b.dataset.tab==='body') renderBodyCharts();
+    if(b.dataset.tab==='body'){ renderBodyCharts(); renderSymptoms(); }
+    if(b.dataset.tab==='food') renderFreqFoods();
     if(b.dataset.tab==='today'){ renderMacrosToday(); renderWorkouts(); }
   };
 });
@@ -923,14 +941,22 @@ function renderMeals(){
   const k=todayKey(), list=D.meals[k]||[], w=$('meallist');
   const m=dayMacros(k);
   $('foodkcal').textContent=list.length?m.kcal.toFixed(0)+' kcal · '+m.nc.toFixed(1)+'g net carbs':'';
+  if(typeof renderFreqFoods==='function') renderFreqFoods();
   if(!list.length){ w.innerHTML='<div class="sub">Nothing logged yet today.</div>'; return; }
   w.innerHTML='';
   list.forEach((e,i)=>{
     const r=document.createElement('div'); r.className='mealrow';
-    r.innerHTML='<div class="nm"><b>'+esc(e.name)+'</b><span>'+e.g+' g</span></div>'+
+    r.innerHTML='<div class="nm"><b>'+esc(e.name)+'</b><span class="editg" style="cursor:pointer;border-bottom:1px dashed var(--mut)" title="tap to edit grams">'+e.g+' g ✎</span></div>'+
       '<div class="mm">'+e.kcal+' kcal<br>P'+e.p+' · NC'+Math.max(0,e.c-e.fb).toFixed(1)+' · F'+e.f+'</div>'+
       '<button class="mini danger">✕</button>';
-    r.querySelector('button').onclick=()=>{ D.meals[k].splice(i,1); save(); renderMeals(); renderMacrosToday(); renderWeave(); };
+    r.querySelector('.editg').onclick=()=>{
+      const ng=parseFloat(prompt('Grams for '+e.name+':',e.g));
+      if(!(ng>0)||ng===e.g) return;
+      const per=ng/e.g;
+      e.kcal=+(e.kcal*per).toFixed(0); e.p=+(e.p*per).toFixed(1); e.c=+(e.c*per).toFixed(1); e.fb=+(e.fb*per).toFixed(1); e.f=+(e.f*per).toFixed(1); e.g=ng;
+      save(); renderMeals(); renderMacrosToday(); renderWeave(); toast('Rescaled to '+ng+' g');
+    };
+    r.querySelector('.danger').onclick=()=>{ D.meals[k].splice(i,1); save(); renderMeals(); renderMacrosToday(); renderWeave(); };
     w.appendChild(r);
   });
 }
@@ -1110,6 +1136,11 @@ function tickFast(){
     $('fastbtn').classList.remove('end'); return;
   }
   const el=Date.now()-D.activeFast.start, goal=D.activeFast.goal*3600000, hrs=el/3600000;
+  if(el>=goal&&!D.activeFast.notified){
+    D.activeFast.notified=true; save();
+    notifyFast('Goal reached — '+fg(D.activeFast.goal)+' h complete! 🎉 Break your fast gently.');
+    if(typeof chimeBig==='function') chimeBig();
+  }
   const down=D.fastView==='down';
   if(down){
     $('fast-elapsed').textContent=el>=goal?'+'+fmtDurS(el-goal):fmtDurS(goal-el);
@@ -1133,6 +1164,7 @@ function renderStages(hrs){
 $('fastbtn').onclick=()=>{
   if(!D.activeFast){
     D.activeFast={start:Date.now(),goal:D.protocol};
+    askNotifyPermission();
     toast(D.protocol>=24?'Extended fast started — electrolytes ready? 🧂':'Fast started — steady as Seigr stone ⏳');
   }else{
     const f={start:D.activeFast.start,end:Date.now(),goal:D.activeFast.goal};
@@ -1396,6 +1428,7 @@ function renderCalendar(){
     c.className='cell'+(k===tk?' today':'')+(s>=3?' lv3':s>=1?' lv1':'')+(selDay===k?' sel':'');
     const FV=FEST[(calM+1)+'-'+d];
     const isBday=D.profile&&!D.profile.skipped&&D.profile.moon===calM&&D.profile.day===d;
+    if(isBday){ const bst=BIRTHSTONES[D.profile.moon][D.profile.stoneIdx||0]; c.style.background='linear-gradient(180deg,'+hexA(bst[1],.5)+','+hexA(bst[2],.5)+')'; }
     c.innerHTML='<span class="sprout">'+(s>=3?'🧵':s>=1?'✦':'')+'</span><span>'+d+'</span>'+(FV?'<span class="fest" title="'+FV.n+'">'+FV.e+'</span>':(isBday?'<span class="fest" title="Your birthday">🎂</span>':''))+
       '<span class="dots">'+(keto?'<i class="dot keto"></i>':'')+(measDates.has(k)?'<i class="dot meas"></i>':'')+(cycSet.has(k)?'<i class="dot cyc"></i>':(predSet.has(k)?'<i class="dot pred"></i>':''))+'</span>'+
       (fh>0.5?'<span class="fbar" style="width:'+(fh/24*100)+'%"></span>':'');
@@ -1424,9 +1457,57 @@ function renderCalendar(){
       (d&&d.water?'💧 '+waterDisp(d.water)+' water<br>':'')+
       ((D.workouts[selDay]||[]).length?'💪 ≈ '+D.workouts[selDay].reduce((a,e)=>a+e.kcal,0)+' kcal burned<br>':'')+
       (cycSet.has(selDay)?'🩸 period day<br>':'')+
-      (d&&d.notes?'✍🏽 '+esc(d.notes):'');
+      (d&&d.symp&&SYMPTOMS.some(([id])=>d.symp[id])?'🫧 '+SYMPTOMS.filter(([id])=>d.symp[id]).map(x=>x[1]).join(' · ')+'<br>':'')+
+      (typeof dayPhotoThumbs==='function'?dayPhotoThumbs(selDay):'')+
+      (d&&d.notes?'✍🏽 '+esc(d.notes):'')+
+      (selDay<=todayKey()?'<div style="margin-top:9px"><button class="mini" id="editday">✎ edit this day</button></div><div id="dayeditor"></div>':'');
     dd.classList.add('show');
+    const eb=$('editday');
+    if(eb) eb.onclick=()=>{ editingDay=selDay; ED=null; eb.style.display='none'; renderDayEditor(selDay); };
+    if(editingDay===selDay&&eb){ eb.style.display='none'; renderDayEditor(selDay); }
   } else dd.classList.remove('show');
+}
+/* ========== EDIT PAST DAYS ========== */
+let editingDay=null, ED=null;
+function renderDayEditor(k){
+  const w=$('dayeditor'); if(!w) return;
+  if(!ED){ const d=D.days[k]||{};
+    ED={study:d.study||'',exercise:d.exercise||'',steps:d.steps||'',mood:d.mood||0,
+        learning:!!d.learning,project:d.project||'',projdone:!!d.projdone,notes:d.notes||''};
+  }
+  w.innerHTML=
+   '<div class="addrow" style="flex-wrap:wrap;margin-top:9px">'+
+     '<input type="number" id="ed-study" placeholder="study min" value="'+ED.study+'" style="flex:1;min-width:76px">'+
+     '<input type="number" id="ed-ex" placeholder="exercise min" value="'+ED.exercise+'" style="flex:1;min-width:76px">'+
+     '<input type="number" id="ed-steps" placeholder="steps" value="'+ED.steps+'" style="flex:1;min-width:76px">'+
+   '</div>'+
+   '<div class="moodrow" style="margin-top:8px">'+MOODS.map(([v,e])=>'<button data-m="'+v+'" class="'+(ED.mood===v?'on':'')+'">'+e+'</button>').join('')+'</div>'+
+   '<div class="addrow" style="flex-wrap:wrap;margin-top:8px">'+
+     '<button class="chip'+(ED.learning?' on':'')+'" id="ed-learn">📚 learned something</button>'+
+     '<button class="chip'+(ED.projdone?' on':'')+'" id="ed-projdone">🛠️ project done</button>'+
+   '</div>'+
+   '<input type="text" id="ed-proj" placeholder="project — what did you work on?" value="'+esc(ED.project)+'" style="width:100%;margin-top:8px;box-sizing:border-box;padding:9px 11px;border:1.5px solid var(--mist);border-radius:11px;background:var(--card);color:var(--ink)">'+
+   '<textarea id="ed-note" placeholder="note to self" style="width:100%;margin-top:8px;box-sizing:border-box">'+esc(ED.notes)+'</textarea>'+
+   '<div class="addrow" style="margin-top:8px"><button class="primary" id="ed-save" style="flex:1">Save day ✎</button><button class="mini" id="ed-cancel">cancel</button></div>';
+  const grab=()=>{ ED.study=$('ed-study').value; ED.exercise=$('ed-ex').value; ED.steps=$('ed-steps').value; ED.project=$('ed-proj').value; ED.notes=$('ed-note').value; };
+  w.querySelectorAll('.moodrow button').forEach(b=>b.onclick=()=>{ grab(); const v=+b.dataset.m; ED.mood=(ED.mood===v?0:v); renderDayEditor(k); });
+  $('ed-learn').onclick=()=>{ grab(); ED.learning=!ED.learning; renderDayEditor(k); };
+  $('ed-projdone').onclick=()=>{ grab(); ED.projdone=!ED.projdone; renderDayEditor(k); };
+  $('ed-cancel').onclick=()=>{ editingDay=null; ED=null; renderCalendar(); };
+  $('ed-save').onclick=()=>{
+    grab();
+    const d=day(k), num=v=>{ const n=parseFloat(v); return n>0?n:0; };
+    [['study',ED.study],['exercise',ED.exercise],['steps',ED.steps]].forEach(([f,v])=>{ const n=num(v); if(n>0) d[f]=n; else delete d[f]; });
+    if(ED.mood) d.mood=ED.mood; else delete d.mood;
+    if(ED.learning) d.learning=true; else delete d.learning;
+    if(ED.project.trim()) d.project=ED.project.trim(); else delete d.project;
+    if(ED.projdone) d.projdone=true; else delete d.projdone;
+    if(ED.notes.trim()) d.notes=ED.notes.trim(); else delete d.notes;
+    editingDay=null; ED=null; save();
+    renderCalendar(); if(typeof renderJournal==='function') renderJournal();
+    if(k===todayKey()) renderToday();
+    toast('Day rewoven ✎');
+  };
 }
 $('calprev').onclick=()=>{calM--;if(calM<0){calM=11;calY--;}selDay=null;renderCalendar();};
 $('calnext').onclick=()=>{calM++;if(calM>11){calM=0;calY++;}selDay=null;renderCalendar();};
@@ -1568,6 +1649,7 @@ $('newgoal').onkeydown=e=>{if(e.key==='Enter')$('addgoal').click();};
   renderProtocols(); tickFast(); renderStages(); renderFastLog();
   renderGemReview(); renderStoneChip(); if(!D.profile) openSetup(); checkBirthday();
   renderUnitUI(); renderCalendar(); renderMeasures(); renderGoals(); renderFunds(); renderBackupNag(); applyAurora(); seedStars();
+  renderFreqFoods(); renderSymptoms(); renderInsights();
 })();
 
 /* ========== HVERLANDS: moons, days, festivals ========== */
@@ -1623,7 +1705,7 @@ if($('fastend-set')) $('fastend-set').onclick=()=>{
   const end=new Date(v).getTime();
   if(isNaN(end)||end<=Date.now()){ toast('That time is already behind us'); return; }
   if(D.activeFast){ D.activeFast.goal=(end-D.activeFast.start)/3600000; toast('Fast now ends '+new Date(end).toLocaleString(undefined,{weekday:'short',hour:'numeric',minute:'2-digit'})); }
-  else { D.activeFast={start:Date.now(),goal:(end-Date.now())/3600000}; toast('Fast started — ends '+new Date(end).toLocaleString(undefined,{weekday:'short',hour:'numeric',minute:'2-digit'})); }
+  else { D.activeFast={start:Date.now(),goal:(end-Date.now())/3600000}; askNotifyPermission(); toast('Fast started — ends '+new Date(end).toLocaleString(undefined,{weekday:'short',hour:'numeric',minute:'2-digit'})); }
   save(); tickFast(); renderStages(); renderProtocols();
 };
 
@@ -1674,6 +1756,7 @@ const BIRTHSTONES=[
 [['Labradorite','#9FD8D0','#5E86A8','#3A4E73'],['Alexandrite','#9AD6B0','#567E86','#6E3A52'],['Black onyx','#6E6E78','#2E2E36','#0E0E12'],['Iolite','#9FA8E8','#5E6BC2','#3A4489'],['White chalcedony','#FFFFFF','#EFF1F3','#D4D9DF']]
 ];
 const orbStyle=st=>'background:radial-gradient(circle at 35% 30%,'+st[1]+','+st[2]+' 55%,'+st[3]+')';
+const hexA=(h,al)=>{ const n=parseInt(h.slice(1),16); return 'rgba('+(n>>16&255)+','+(n>>8&255)+','+(n&255)+','+al+')'; };
 let suMoon=new Date().getMonth(), suStone=0;
 function renderSetup(){
   $('su-moon').innerHTML=MOONS.map((m,i)=>'<option value="'+i+'"'+(i===suMoon?' selected':'')+'>'+m+' Moon · '+new Date(2000,i,1).toLocaleDateString(undefined,{month:'long'})+'</option>').join('');
@@ -1714,9 +1797,8 @@ function checkBirthday(){
   const pf=D.profile; if(!pf||pf.skipped||pf.moon==null) return;
   const now=new Date();
   if(now.getMonth()!==pf.moon||now.getDate()!==pf.day) return;
-  if(D.lastBday===now.getFullYear()) return;
-  D.lastBday=now.getFullYear(); save();
-  const hexA=(h,al)=>{ const n=parseInt(h.slice(1),16); return 'rgba('+(n>>16&255)+','+(n>>8&255)+','+(n&255)+','+al+')'; };
+  if(D.lastBdayKey===todayKey()) return;
+  D.lastBdayKey=todayKey(); delete D.lastBday; save();
   const st=(!pf.skipped&&pf.moon!=null)?BIRTHSTONES[pf.moon][pf.stoneIdx||0]:null;
   const sheet=$('bdayov').querySelector('.sheet');
   if(st&&sheet) sheet.style.backgroundImage='linear-gradient(180deg,'+hexA(st[1],.5)+','+hexA(st[2],.5)+')';
@@ -1746,7 +1828,10 @@ function renderGemReview(){
   el.innerHTML='<h2>💎 Gem Day — the week, witnessed</h2>'+
     '<div class="sub" style="line-height:2">🧵 '+strong+' strong day'+(strong===1?'':'s')+' · ⚖️ macros met ×'+onT+' · 💧 water goal ×'+water+(moodN?' · '+moodGlyph(Math.round(mood/moodN))+' avg mood':'')+
     '<br>📖 '+study+' min study · ⏳ '+Math.round(fast)+' h fasted</div>'+
+    (typeof gemPhotoStrip==='function'?gemPhotoStrip():'')+
+    '<button class="primary" id="gemdl" style="width:100%;margin-top:10px">💾 Download week card'+((typeof PH!=='undefined'&&Object.values(PH).some(p=>p.k<todayKey()))?' & release photos':'')+'</button>'+
     '<div class="gentle">Counted, kept, released. The new week began at midnight — spend it well. 💎</div>';
+  const dl=el.querySelector('#gemdl'); if(dl) dl.onclick=()=>downloadWeekCard();
 }
 
 /* ========== STARFIELD ========== */
@@ -1816,6 +1901,303 @@ if($('addfund')) $('addfund').onclick=()=>{
   D.funds.push({name,target,cur:0,cc}); $('newfundname').value=''; $('newfundtarget').value=''; save(); renderFunds();
   toast('Fund added — quiet and yours 🏔️');
 };
+
+/* ========== v21: FREQUENT FOODS (one-tap re-log, last 30 days) ========== */
+function renderFreqFoods(){
+  const w=$('freqfoods'); if(!w) return;
+  const cnt={}, info={};
+  const cutoff=new Date(); cutoff.setHours(0,0,0,0); cutoff.setDate(cutoff.getDate()-30);
+  Object.keys(D.meals).forEach(k=>{
+    if(new Date(k+'T00:00')<cutoff) return;
+    (D.meals[k]||[]).forEach(e=>{ cnt[e.name]=(cnt[e.name]||0)+1; info[e.name]=e; });
+  });
+  const top=Object.keys(cnt).filter(n=>cnt[n]>=2).sort((a,b)=>cnt[b]-cnt[a]).slice(0,6);
+  if(!top.length){ w.innerHTML=''; return; }
+  w.innerHTML='<span class="sub" style="flex-basis:100%">Your usuals — one tap to select:</span>';
+  top.forEach(n=>{
+    const e=info[n], b=document.createElement('button'); b.className='chip';
+    b.textContent=n+' ×'+cnt[n];
+    b.onclick=()=>{
+      const per=e.g>0?100/e.g:1;
+      selFood={name:e.name,k:+(e.kcal*per).toFixed(0),p:+(e.p*per).toFixed(1),c:+(e.c*per).toFixed(1),fb:+(e.fb*per).toFixed(1),f:+(e.f*per).toFixed(1)};
+      $('selname').textContent=e.name; $('fgrams').value=e.g; $('fsearch').value=e.name;
+      $('amtrow').style.display='flex';
+      window.scrollTo({top:0,behavior:'smooth'}); toast('Grams prefilled from last time — tap Add');
+    };
+    w.appendChild(b);
+  });
+}
+
+/* ========== v21: CYCLE SYMPTOMS ========== */
+const SYMPTOMS=[['cramps','🌀 cramps'],['bloat','🎈 bloating'],['headache','🤕 headache'],['cravings','🍫 cravings'],['lowE','🪫 low energy'],['highE','⚡ high energy'],['spot','🩸 spotting']];
+function renderSymptoms(){
+  const w=$('symprow'); if(!w) return;
+  const d=D.days[todayKey()], s=(d&&d.symp)||{};
+  w.innerHTML='<span class="sub" style="flex-basis:100%">Today\u2019s symptoms (tap to toggle):</span>';
+  SYMPTOMS.forEach(([id,label])=>{
+    const b=document.createElement('button'); b.className='chip'+(s[id]?' on':''); b.textContent=label;
+    b.onclick=()=>{ const dd=day(todayKey()); dd.symp=dd.symp||{}; dd.symp[id]=!dd.symp[id]; save(); renderSymptoms(); };
+    w.appendChild(b);
+  });
+}
+
+/* ========== v21: CSV EXPORT (doctor/spreadsheet-friendly) ========== */
+function exportCSV(){
+  const dates=new Set(Object.keys(D.days).concat(Object.keys(D.meals)));
+  (D.cycleDays||[]).forEach(k=>dates.add(k));
+  (D.measures||[]).forEach(m=>dates.add(keyOf(new Date(m.date))));
+  const rows=[['date','kcal','protein_g','net_carbs_g','fat_g','water_ml','study_min','exercise_min','steps','mood_1to5','weave_score','fasted_h','weight_kg','period','symptoms','note']];
+  [...dates].sort().forEach(k=>{
+    const d=D.days[k]||{}, m=dayMacros(k);
+    const meas=(D.measures||[]).find(x=>keyOf(new Date(x.date))===k&&x.w!==undefined);
+    const symp=d.symp?SYMPTOMS.filter(([id])=>d.symp[id]).map(x=>x[0]).join('|'):'';
+    rows.push([k,m.kcal.toFixed(0),m.p.toFixed(1),m.nc.toFixed(1),m.f.toFixed(1),d.water||0,d.study||0,d.exercise||0,d.steps||0,d.mood||'',weaveScore(k),fastedHours(k).toFixed(1),meas?meas.w:'',(D.cycleDays||[]).includes(k)?1:0,symp,'"'+String(d.notes||'').replace(/"/g,'""')+'"']);
+  });
+  const blob=new Blob([rows.map(r=>r.join(',')).join('\n')],{type:'text/csv'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='lifsteinn-data-'+todayKey()+'.csv'; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),5000);
+  toast('CSV exported — spreadsheet & doctor ready 📊');
+}
+if($('csvbtn')) $('csvbtn').onclick=exportCSV;
+
+/* ========== v21: PATTERNS (gentle cross-tracker insights, last 60 days) ========== */
+function avgOf(a){ return a.length?a.reduce((x,y)=>x+y,0)/a.length:0; }
+function renderInsights(){
+  const el=$('insights'), card=$('insightscard'); if(!el||!card) return;
+  const lines=[];
+  const keys=[];
+  for(let i=59;i>=0;i--){ const d=new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate()-i); keys.push(keyOf(d)); }
+  /* mood on macros-met days vs not */
+  const mOn=[], mOff=[];
+  keys.forEach(k=>{ const d=D.days[k]; if(d&&d.mood) (isOnTarget(k)?mOn:mOff).push(d.mood); });
+  if(mOn.length>=4&&mOff.length>=4){
+    const a=avgOf(mOn), b=avgOf(mOff);
+    if(Math.abs(a-b)>=0.3) lines.push('🌤️ Mood averages <b>'+a.toFixed(1)+'</b> on macros-met days vs <b>'+b.toFixed(1)+'</b> otherwise ('+(mOn.length+mOff.length)+' days rated).');
+  }
+  /* mood on fasting days vs eating days */
+  const fOn=[], fOff=[];
+  keys.forEach(k=>{ const d=D.days[k]; if(d&&d.mood) (fastedHours(k)>=12?fOn:fOff).push(d.mood); });
+  if(fOn.length>=4&&fOff.length>=4){
+    const a=avgOf(fOn), b=avgOf(fOff);
+    if(Math.abs(a-b)>=0.3) lines.push('⏳ Mood averages <b>'+a.toFixed(1)+'</b> on fasting days (12 h+) vs <b>'+b.toFixed(1)+'</b> on eating days.');
+  }
+  /* strongest weekday by weave */
+  const wk=[[],[],[],[],[],[],[]];
+  keys.forEach(k=>{ const s=weaveScore(k); if(s>0) wk[new Date(k+'T00:00').getDay()].push(s); });
+  const wkAvg=wk.map(a=>a.length>=3?avgOf(a):-1);
+  const best=wkAvg.indexOf(Math.max.apply(null,wkAvg));
+  if(wkAvg[best]>0) lines.push('📅 Strongest weave lately: <b>'+HVDAYS[best][1]+'</b> '+HVDAYS[best][0]+' (avg '+wkAvg[best].toFixed(1)+' / 5).');
+  /* symptoms cluster before period? */
+  if((D.cycleDays||[]).length&&SYMPTOMS.some(([id])=>keys.some(k=>D.days[k]&&D.days[k].symp&&D.days[k].symp[id]))){
+    const starts=cycleStarts(), pre=[], other=[];
+    keys.forEach(k=>{
+      const d=D.days[k]; if(!d||!d.symp) return;
+      const n=SYMPTOMS.filter(([id])=>d.symp[id]).length; if(!n) return;
+      const t=new Date(k+'T00:00').getTime();
+      const isPre=starts.some(s=>{ const st=new Date(s+'T00:00').getTime(); const diff=(st-t)/86400000; return diff>0&&diff<=5; });
+      (isPre?pre:other).push(n);
+    });
+    if(pre.length>=3&&other.length>=3){
+      const a=avgOf(pre), b=avgOf(other);
+      if(a>b*1.3) lines.push('🫧 Symptoms cluster in the <b>5 days before</b> your period ('+a.toFixed(1)+' vs '+b.toFixed(1)+' per day) — classic luteal pattern, useful for a doctor.');
+    }
+  }
+  /* weight over 30 days */
+  const ms=(D.measures||[]).filter(m=>m.w!==undefined).sort((a,b)=>a.date-b.date);
+  const recent=ms.filter(m=>m.date>=Date.now()-30*86400000);
+  if(recent.length>=2){
+    const dw=recent[recent.length-1].w-recent[0].w, disp=fx1(Math.abs(w2d(dw)));
+    lines.push('📏 Weight over the last 30 days: <b>'+(dw<0?'\u2212':dw>0?'+':'\u00b1')+disp+' '+wU()+'</b> across '+recent.length+' check-ins.');
+  }
+  if(!lines.length){ card.style.display='none'; return; }
+  card.style.display='block';
+  el.innerHTML=lines.map(l=>'<div style="font-size:13px;line-height:1.8;color:var(--ink)">'+l+'</div>').join('');
+}
+
+/* ========== v21: FAST GOAL NOTIFICATIONS ========== */
+function askNotifyPermission(){
+  try{ if('Notification' in window&&Notification.permission==='default') Notification.requestPermission(); }catch(e){}
+}
+/* ========== v22: MEAL PHOTOS (ephemeral — released each Gem Day) ==========
+   Photos live in their OWN storage key (not the main data / JSON backups),
+   compressed hard, held ~1 week, baked into the Gem Day card, then released. */
+var PH={};
+const PHKEY='lifsteinn-photos';
+const photoStore={
+  async load(){
+    try{ if(window.storage&&window.storage.get){ try{ const r=await window.storage.get(PHKEY); if(r&&r.value) return JSON.parse(r.value); }catch(e){} return {}; } }catch(e){}
+    try{ const v=localStorage.getItem(PHKEY); if(v) return JSON.parse(v); }catch(e){}
+    return {};
+  },
+  async save(){
+    const v=JSON.stringify(PH);
+    try{ if(window.storage&&window.storage.set){ await window.storage.set(PHKEY,v); return true; } }catch(e){}
+    try{ localStorage.setItem(PHKEY,v); return true; }
+    catch(e){ toast('Photo storage is full — download your Gem Day card to release space 📦'); return false; }
+  }
+};
+function photoBytes(){ let n=0; Object.values(PH).forEach(p=>n+=(p.data||'').length); return n; }
+function compressImage(file){
+  return new Promise((res,rej)=>{
+    const img=new Image(), url=URL.createObjectURL(file);
+    img.onload=()=>{
+      const max=720, sc=Math.min(1,max/Math.max(img.width,img.height));
+      const c=document.createElement('canvas');
+      c.width=Math.round(img.width*sc); c.height=Math.round(img.height*sc);
+      c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+      URL.revokeObjectURL(url);
+      res(c.toDataURL('image/jpeg',0.6));
+    };
+    img.onerror=()=>{ URL.revokeObjectURL(url); rej(new Error('unreadable image')); };
+    img.src=url;
+  });
+}
+function renderPhotos(){
+  const row=$('photorow'), cnt=$('photocount'); if(!row) return;
+  const k=todayKey(), ids=Object.keys(PH).filter(id=>PH[id].k===k);
+  const total=Object.keys(PH).length;
+  if(cnt) cnt.textContent=total?total+' held this week · ~'+(photoBytes()/1048576).toFixed(1)+' MB':'';
+  row.innerHTML='';
+  ids.forEach(id=>{
+    const wrap=document.createElement('span'); wrap.style.cssText='position:relative;display:inline-block';
+    wrap.innerHTML='<img src="'+PH[id].data+'" style="height:74px;border-radius:10px;display:block">'+
+      '<button class="mini danger" style="position:absolute;top:2px;right:2px;padding:1px 6px">✕</button>';
+    wrap.querySelector('button').onclick=()=>{ delete PH[id]; photoStore.save(); renderPhotos(); };
+    row.appendChild(wrap);
+  });
+}
+function dayPhotoThumbs(k){
+  const ps=Object.values(PH).filter(p=>p.k===k);
+  return ps.length?ps.map(p=>'<img src="'+p.data+'" style="height:56px;border-radius:8px;margin:4px 4px 0 0;vertical-align:middle">').join('')+'<br>':'';
+}
+function gemPhotoStrip(){
+  const tk=todayKey();
+  const ps=Object.values(PH).filter(p=>p.k<tk).sort((a,b)=>a.k<b.k?-1:1).slice(0,21);
+  if(!ps.length) return '';
+  return '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">'+ps.map(p=>'<img src="'+p.data+'" style="height:64px;border-radius:9px">').join('')+'</div>';
+}
+function purgeOldPhotos(){
+  /* safety net: if a Gem Day was missed, photos never linger past 14 days */
+  const cut=new Date(); cut.setDate(cut.getDate()-14);
+  const ck=keyOf(cut); let n=0;
+  Object.keys(PH).forEach(id=>{ if(PH[id].k<ck){ delete PH[id]; n++; } });
+  if(n) photoStore.save();
+}
+if($('photobtn')){
+  $('photobtn').onclick=()=>$('photofile').click();
+  $('photofile').onchange=async e=>{
+    const file=e.target.files[0]; e.target.value=''; if(!file) return;
+    if(photoBytes()>3.5*1048576){ toast('Photo space nearly full — download a Gem Day card to release the week 📦'); return; }
+    try{
+      const data=await compressImage(file);
+      const id='p'+Date.now();
+      PH[id]={k:todayKey(),t:Date.now(),data:data};
+      if(await photoStore.save()){ renderPhotos(); toast('Photo tucked in for this week 📷'); }
+      else delete PH[id];
+    }catch(err){ toast('Could not read that image'); }
+  };
+}
+async function downloadWeekCard(){
+  try{ await document.fonts.ready; }catch(e){}
+  /* same 7-day window as the Gem Day card (yesterday back through 7 days ago) */
+  let strong=0,onT=0,water=0,mood=0,moodN=0,study=0,fast=0;
+  const dts=[];
+  for(let i=7;i>=1;i--){
+    const dt=new Date(); dt.setHours(0,0,0,0); dt.setDate(dt.getDate()-i); dts.push(dt);
+    const k=keyOf(dt), d=D.days[k];
+    if(weaveScore(k)>=3) strong++;
+    if(isOnTarget(k)) onT++;
+    if(d&&(d.water||0)>=(D.waterGoal||2000)) water++;
+    if(d&&d.mood){ mood+=d.mood; moodN++; }
+    if(d) study+=d.study||0;
+    fast+=fastedHours(k);
+  }
+  const range=dts[0].toLocaleDateString(undefined,{month:'short',day:'numeric'})+' – '+dts[6].toLocaleDateString(undefined,{month:'short',day:'numeric'});
+  const tk=todayKey();
+  const ps=Object.values(PH).filter(p=>p.k<tk).sort((a,b)=>a.k<b.k?-1:1).slice(0,21);
+  const loaded=await Promise.all(ps.map(p=>new Promise(res=>{
+    const im=new Image(); im.onload=()=>res({im:im,k:p.k}); im.onerror=()=>res(null); im.src=p.data;
+  })));
+  const good=loaded.filter(Boolean);
+  const W=1080, P=54, gap=18, cols=3, cw=(W-P*2-gap*(cols-1))/cols, ch=cw*0.75;
+  const rows=Math.ceil(good.length/cols);
+  const headH=340, footH=110;
+  const H=headH+(rows?rows*(ch+gap+26):0)+footH;
+  const c=document.createElement('canvas'); c.width=W; c.height=H;
+  const x=c.getContext('2d');
+  const grad=x.createLinearGradient(0,0,0,H); grad.addColorStop(0,'#0D1A36'); grad.addColorStop(1,'#23407A');
+  x.fillStyle=grad; x.fillRect(0,0,W,H);
+  x.fillStyle='#C9A227'; x.fillRect(0,0,W,6);
+  x.fillStyle='#E8C766'; x.font='700 30px "Alegreya SC", serif'; x.fillText('LÍFSTEINN · GEM DAY 💎',P,88);
+  x.fillStyle='#FFFFFF'; x.font='700 54px "Alegreya SC", serif'; x.fillText('The week, witnessed',P,154);
+  x.fillStyle='#BFD4F2'; x.font='600 30px "Winky Sans", sans-serif'; x.fillText(range,P,200);
+  x.fillStyle='#F4F7FF'; x.font='600 31px "Winky Sans", sans-serif';
+  x.fillText('🧵 '+strong+' strong days   ·   ⚖️ macros ×'+onT+'   ·   💧 water ×'+water+(moodN?'   ·   '+moodGlyph(Math.round(mood/moodN))+' mood':''),P,258);
+  x.fillText('📖 '+study+' min study   ·   ⏳ '+Math.round(fast)+' h fasted',P,304);
+  good.forEach((g,i)=>{
+    const col=i%cols, row=Math.floor(i/cols);
+    const dx=P+col*(cw+gap), dy=headH+row*(ch+gap+26);
+    const s=Math.max(cw/g.im.width,ch/g.im.height);
+    const sw=cw/s, sh=ch/s, sx=(g.im.width-sw)/2, sy=(g.im.height-sh)/2;
+    x.save(); x.beginPath();
+    if(x.roundRect) x.roundRect(dx,dy,cw,ch,14); else x.rect(dx,dy,cw,ch);
+    x.clip(); x.drawImage(g.im,sx,sy,sw,sh,dx,dy,cw,ch); x.restore();
+    x.fillStyle='#BFD4F2'; x.font='600 20px "Winky Sans", sans-serif';
+    x.fillText(new Date(g.k+'T00:00').toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'}),dx,dy+ch+22);
+  });
+  x.fillStyle='#8FA6D6'; x.font='italic 26px Caudex, serif';
+  x.fillText('Counted, kept, released. 🧵',P,H-46);
+  const a=document.createElement('a');
+  a.href=c.toDataURL('image/jpeg',0.85);
+  a.download='lifsteinn-gemday-'+todayKey()+'.jpg'; a.click();
+  toast('Week card downloaded 💎');
+  if(ps.length&&confirm('Card saved! Release this week\u2019s '+ps.length+' photo'+(ps.length===1?'':'s')+' from storage now? (They live on in the card.)')){
+    Object.keys(PH).forEach(id=>{ if(PH[id].k<tk) delete PH[id]; });
+    photoStore.save(); renderPhotos(); renderGemReview();
+    toast('Photos released — storage light as a thread ✨');
+  }
+}
+/* photos load after main init; re-render the bits that show them */
+photoStore.load().then(p=>{ PH=p||{}; purgeOldPhotos(); renderPhotos(); renderGemReview(); });
+
+function notifyFast(msg){
+  toast(msg);
+  try{
+    if(!('Notification' in window)||Notification.permission!=='granted') return;
+    /* Android Chrome only allows notifications via the service worker registration */
+    if(navigator.serviceWorker&&navigator.serviceWorker.getRegistration){
+      navigator.serviceWorker.getRegistration().then(reg=>{
+        try{
+          if(reg&&reg.showNotification) reg.showNotification('L\u00edfsteinn \u23f3',{body:msg,vibrate:[200,100,200],tag:'fast-goal'});
+          else new Notification('L\u00edfsteinn \u23f3',{body:msg});
+        }catch(e){}
+      }).catch(()=>{ try{ new Notification('L\u00edfsteinn \u23f3',{body:msg}); }catch(e){} });
+    } else { new Notification('L\u00edfsteinn \u23f3',{body:msg}); }
+  }catch(e){}
+}
+
+/* ========== v21.1: FAST END → CALENDAR (.ics with reminder) ========== */
+function fastToCalendar(){
+  if(!D.activeFast){ toast('Start a fast first — then send its end to your calendar'); return; }
+  const end=new Date(D.activeFast.start+D.activeFast.goal*3600000);
+  const f=d=>d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate())+'T'+pad(d.getHours())+pad(d.getMinutes())+'00';
+  const ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Lifsteinn//Life Tracker//EN','BEGIN:VEVENT',
+    'UID:fast-'+D.activeFast.start+'@lifsteinn',
+    'DTSTAMP:'+f(new Date()),
+    'DTSTART:'+f(end),
+    'DTEND:'+f(new Date(end.getTime()+15*60000)),
+    'SUMMARY:\u23f3 Fast complete \u2014 '+fg(D.activeFast.goal)+' h reached!',
+    'DESCRIPTION:Break your fast gently. \ud83c\udf31',
+    'BEGIN:VALARM','TRIGGER:-PT0M','ACTION:DISPLAY','DESCRIPTION:Fast complete','END:VALARM',
+    'END:VEVENT','END:VCALENDAR'].join('\r\n');
+  const blob=new Blob([ics],{type:'text/calendar'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='fast-ends-'+todayKey()+'.ics'; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),5000);
+  toast('Open the file to add it to your calendar \ud83d\udcc5');
+}
+if($('fastcal')) $('fastcal').onclick=fastToCalendar;
 </script>
 
 <script>
