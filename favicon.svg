@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+<defs>
+  <radialGradient id="orb" cx="0.38" cy="0.32" r="0.95">
+    <stop offset="0" stop-color="#FFFFFF"/><stop offset=".45" stop-color="#EAF2FC"/>
+    <stop offset=".78" stop-color="#C9DCF4"/><stop offset="1" stop-color="#A9C2E8"/>
+  </radialGradient>
+</defs>
+<rect width="64" height="64" fill="#142047"/>
+<circle cx="32" cy="32" r="26" fill="url(#orb)"/>
+<clipPath id="c"><circle cx="32" cy="32" r="26"/></clipPath>
+<g clip-path="url(#c)" stroke="#C9A227" stroke-width="4" fill="none">
+  <line x1="0" y1="18.4" x2="45.6" y2="64"/>
+  <line x1="18.4" y1="0" x2="64" y2="45.6"/>
+  <line x1="0" y1="45.6" x2="45.6" y2="0"/>
+  <line x1="18.4" y1="64" x2="64" y2="18.4"/>
+</g>
+<circle cx="32" cy="32" r="26" fill="none" stroke="#C9A227" stroke-width="4"/>
+<g fill="#E8C766">
+  <circle cx="32" cy="13.6" r="4"/><circle cx="13.6" cy="32" r="4"/>
+  <circle cx="50.4" cy="32" r="4"/><circle cx="32" cy="50.4" r="4"/>
+</g>
+</svg>
