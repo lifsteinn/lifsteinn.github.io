@@ -14,7 +14,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Homemade+Apple&family=Alegreya:ital,wght@0,400;0,500;0,700;1,400&family=Alegreya+SC:wght@500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Homemade+Apple&family=Caudex:ital,wght@0,400;0,700;1,400&family=Alegreya+SC:wght@500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Winky+Sans:wght@400;600;700&family=Winky+Rough:wght@400;600&display=swap" rel="stylesheet">
 <style>
   :root{
@@ -268,7 +268,7 @@
 </style>
 <style>
   /* ===== v15 typography: Homemade Apple hero · Alegreya SC display · Alegreya body ===== */
-  body{font-family:'Alegreya',Georgia,serif;font-size:15.5px}
+  body{font-family:'Caudex',Georgia,serif;font-size:15.5px}
   h1,h2,h3,.display{font-family:'Alegreya SC',serif;letter-spacing:.01em;font-weight:700}
   header h1{font-family:'Homemade Apple',cursive;font-weight:400;font-size:26px;line-height:1.5;margin-top:4px;text-shadow:0 0 7px rgba(232,199,102,.35)}
   #calmonth{font-family:'Homemade Apple',cursive;font-weight:400;font-size:19px;line-height:1.65}
@@ -277,9 +277,9 @@
   .gentle{font-size:13px}
   .habit .name{font-size:16px}
   .habit .meta{font-size:12.5px}
-  .habit input[type=text]{font-family:'Alegreya',serif;font-size:15px}
-  textarea{font-family:'Alegreya',serif;font-size:15.5px}
-  .search input{font-family:'Alegreya',serif;font-size:16px}
+  .habit input[type=text]{font-family:'Caudex',serif;font-size:15px}
+  textarea{font-family:'Caudex',serif;font-size:15.5px}
+  .search input{font-family:'Caudex',serif;font-size:16px}
   .res{font-size:15px}
   .macro .v{font-size:16px}
   .macro .t,.macro .rem{font-size:10.5px}
@@ -292,7 +292,7 @@
   .mealrow .nm span{font-size:12.5px}
   .primary,.mini,.chip,.bigbtn,.tabbar,.navbtn,.check{font-family:'Alegreya SC',serif}
   .bigbtn{font-size:17px}
-  .proverb .jp{font-family:'Alegreya',serif;font-style:italic;font-weight:600;font-size:17px}
+  .proverb .jp{font-family:'Caudex',serif;font-style:italic;font-weight:600;font-size:17px}
   .proverb .en{font-size:13.5px}
   nav button{font-family:'Alegreya SC',serif;font-size:11px}
   .cell{font-size:15px}
@@ -308,11 +308,11 @@
   .gentle{font-weight:500}
   .formgrid input,.formgrid select{font-family:'Winky Sans',system-ui,sans-serif;font-weight:600}
   .toast{font-family:'Winky Rough','Winky Sans',sans-serif;font-weight:600;font-size:15px}
-  .moonlore{font-family:'Alegreya',Georgia,serif;font-size:14px}
-  .lorebox .moonlore{font-size:14.5px}
-  .daydetail{font-size:14px}
+  .moonlore{font-family:'Caudex',Georgia,serif;font-size:15px}
+  .lorebox .moonlore{font-size:15.5px;line-height:1.6}
+  .daydetail{font-size:14.5px}
   #calmonth{justify-content:center;text-align:center;row-gap:0}
-  .calyear{flex-basis:100%;text-align:center;font-family:'Alegreya',serif;font-style:normal;font-weight:700;font-size:23px;letter-spacing:.04em;line-height:1.2}
+  .calyear{flex-basis:100%;text-align:center;font-family:'Caudex',serif;font-style:normal;font-weight:700;font-size:23px;letter-spacing:.04em;line-height:1.2}
   .calmoon{width:100%;text-align:center}
   .dow div{font-size:19px;padding-bottom:5px}
   .dot.pred{background:transparent;border:1.4px solid #E05C7A;box-sizing:border-box}
@@ -351,6 +351,11 @@
   .bottomtools button.on{background:var(--sun);border-color:var(--sun)}
   .bottomtools #soundbtn.on{background:rgba(201,162,39,.5)}
   body.aurora .bottomtools button{background:rgba(21,31,54,.85);border-color:rgba(201,162,39,.45)}
+</style>
+<style>
+  /* ===== aurora primaries: header aqua ===== */
+  body.aurora .primary,body.aurora .bigbtn{background:#57C79A;color:#0D1A36;text-shadow:none}
+  body.aurora .primary:active,body.aurora .bigbtn:active{box-shadow:0 0 16px rgba(87,199,154,.55)}
 </style>
 </head>
 <body>
@@ -744,7 +749,7 @@ const store={
 /* ========== DATA ========== */
 let D={
   days:{}, meals:{}, fasts:[], activeFast:null, protocol:16,
-  goals:[], measures:[], customFoods:[], tasks:[], countdowns:[], workouts:{}, savedMeals:[], cycleDays:[], funds:[], aurora:false, sound:true, fastView:'up', lastBackup:null,
+  goals:[], measures:[], customFoods:[], tasks:[], countdowns:[], workouts:{}, savedMeals:[], cycleDays:[], funds:[], auroraMode:'auto', sound:true, fastView:'up', lastBackup:null,
   targets:{kcal:1500,p:100,nc:25,f:110}
 };
 const pad=n=>String(n).padStart(2,'0');
@@ -1557,7 +1562,7 @@ $('newgoal').onkeydown=e=>{if(e.key==='Enter')$('addgoal').click();};
     }
     D.targets=Object.assign({kcal:1500,p:100,nc:25,f:110},loaded.targets||{});
     D.funds=D.funds||[]; D.sound=D.sound!==false; D.fastView=D.fastView||'up';
-    D.units=D.units||'metric'; D.waterGoal=D.waterGoal||2000;
+    D.units=D.units||'metric'; D.waterGoal=D.waterGoal||2000; D.auroraMode=D.auroraMode||'auto'; delete D.aurora;
   }
   renderProverb(); renderToday(); renderMeals(); renderTargets(); fillCalc(); renderLibrary(); renderTasks(); renderCountdowns(); renderExOptions(); renderWorkouts(); renderCombos(); renderCycle(); renderBodyCharts(); renderFieldCharts(); renderJournal(); renderLytes();
   renderProtocols(); tickFast(); renderStages(); renderFastLog();
@@ -1757,8 +1762,26 @@ function seedStars(){
 }
 
 /* ========== AURORA MOON MODE ========== */
-function applyAurora(){ document.body.classList.toggle('aurora',!!D.aurora); const b=$('aurorabtn'); if(b) b.classList.toggle('on',!!D.aurora); }
-if($('aurorabtn')) $('aurorabtn').onclick=()=>{ D.aurora=!D.aurora; save(); applyAurora(); };
+const darkMQ=(window.matchMedia?window.matchMedia('(prefers-color-scheme: dark)'):null);
+function auroraActive(){
+  const m=D.auroraMode||'auto';
+  if(m==='on') return true;
+  if(m==='off') return false;
+  return darkMQ?!!darkMQ.matches:true; /* no device preference available -> aurora by default */
+}
+function applyAurora(){
+  const on=auroraActive(), m=D.auroraMode||'auto';
+  document.body.classList.toggle('aurora',on);
+  const b=$('aurorabtn');
+  if(b){ b.textContent=(m==='auto'?'🌗':m==='on'?'🌌':'☀️'); b.classList.toggle('on',on); b.title=(m==='auto'?'Theme: follows device':m==='on'?'Aurora Moon: always on':'Aurora Moon: off'); }
+  const tm=document.querySelector('meta[name="theme-color"]'); if(tm) tm.setAttribute('content', on?'#0C1322':'#1E3464');
+}
+if(darkMQ){ try{ darkMQ.addEventListener('change',applyAurora); }catch(e){ try{ darkMQ.addListener(applyAurora); }catch(e2){} } }
+if($('aurorabtn')) $('aurorabtn').onclick=()=>{
+  const order=['auto','on','off'];
+  D.auroraMode=order[(order.indexOf(D.auroraMode||'auto')+1)%3]; save(); applyAurora();
+  toast(D.auroraMode==='auto'?'Theme follows your device 🌗':D.auroraMode==='on'?'Aurora Moon: always on 🌌':'Aurora Moon: off ☀️');
+};
 
 /* ========== BACKUP NAG ========== */
 function renderBackupNag(){
