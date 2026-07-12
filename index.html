@@ -195,6 +195,7 @@
   .goalrow .fill{height:100%;background:var(--sapphire);border-radius:5px}
   .addrow{display:flex;gap:8px;margin-top:12px}
   .addrow input{flex:1;padding:9px 11px;border:1.5px solid var(--mist);border-radius:11px;font-size:14px;font-family:'Nunito Sans',sans-serif;color:var(--ink)}
+  #rec-name,#rec-search{width:100%;padding:11px 13px;border:1.5px solid var(--mist);border-radius:12px;font-size:15px;font-family:'Nunito Sans',sans-serif;color:var(--ink);background:var(--card)}
   select,input[type=date]{padding:8px 10px;border:1.5px solid var(--mist);border-radius:10px;font-family:'Nunito Sans',sans-serif;font-size:14px;color:var(--ink);background:var(--card)}
   .countdown{font-family:'Fredoka',sans-serif;font-weight:900;color:var(--sapphire-deep)}
 
@@ -216,7 +217,12 @@
   main,.tabbar{position:relative;z-index:2}
   .gdue{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--sun);font-weight:600;white-space:nowrap}
   .moonlore{font-size:12px;color:var(--mut);font-style:italic;text-align:center;margin:2px 0 10px;line-height:1.45}
-  @media (prefers-reduced-motion:reduce){.starfield span{animation:none;opacity:.45}}
+  .starfield .gold,.starfield .moon{animation:glowpulse var(--d,6s) ease-in-out infinite}
+  @keyframes glowpulse{0%,100%{opacity:.55;transform:scale(.92)}50%{opacity:1;transform:scale(1)}}
+  .starfield .shoot{top:14%;left:-6%;font-size:.72rem;color:#F4F7FF;text-shadow:0 0 8px #F4F7FF;animation:shoot 46s linear infinite}
+  .starfield .comet{top:32%;left:-8%;font-size:1.02rem;color:#BFD4F2;text-shadow:0 0 10px #BFD4F2;animation:shoot 92s linear infinite;animation-delay:21s}
+  @keyframes shoot{0%{transform:translate(0,0) rotate(-18deg);opacity:0}1%{opacity:1}7%{transform:translate(64vw,20vh) rotate(-18deg);opacity:0}100%{transform:translate(64vw,20vh) rotate(-18deg);opacity:0}}
+  @media (prefers-reduced-motion:reduce){.starfield span{animation:none;opacity:.45}.starfield .shoot,.starfield .comet{display:none}}
   /* ===== Type roles: Fredoka display, Nunito Sans body ===== */
   .primary,.mini,.chip,.bigbtn,.tabbar,.navbtn,.check{font-family:'Fredoka',sans-serif}
   .proverb .jp{font-family:'Fredoka',sans-serif;font-weight:600;font-size:16.5px}
@@ -261,9 +267,9 @@
   .fundrow .amt{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--mut)}
   .fundrow .btns{display:flex;gap:6px;margin-top:7px}
   input,select,textarea{background:var(--card);color:var(--ink)}
-  body.aurora{--field:#0C1322;--ink:#E7ECF8;--card:#151F36;--mist:#26324E;--paper:#101A2E;--mut:#A9B5D2;--sapphire:#5E7FC9;--sapphire-deep:#A9BEF0;--leaf:#5FAF82;--sun:#D9B54A;--rose:#D97E9C}
-  body.aurora header{background:linear-gradient(165deg,#081020 0%,#0E1D3A 60%,#16305A 100%);border-bottom-color:#57C79A}
-  body.aurora .card{box-shadow:0 1px 3px rgba(0,0,0,.4)}
+  body.aurora{--field:#0A1226;--ink:#E7ECF8;--card:#121D3C;--mist:#25335A;--paper:#0C1528;--mut:#AEBAD8;--sapphire:#5E7FC9;--sapphire-deep:#A9BEF0;--leaf:#5FAF82;--sun:#D9B54A;--rose:#D97E9C}
+  body.aurora header{background:linear-gradient(165deg,#060D1E 0%,#0B1B3C 60%,#123061 100%);border-bottom-color:#57C79A}
+  body.aurora .card{background:rgba(5,9,20,.8);backdrop-filter:saturate(1.15) blur(3px);-webkit-backdrop-filter:saturate(1.15) blur(3px);box-shadow:0 1px 3px rgba(0,0,0,.45)}
   body.aurora .nag{background:#2A2410;color:#E8CE7E}
 </style>
 <style>
@@ -330,17 +336,20 @@
   .stoneorb{width:34px;height:34px;border-radius:50%;flex-shrink:0;box-shadow:inset -3px -4px 7px rgba(0,0,0,.28),inset 2px 3px 5px rgba(255,255,255,.45),0 1px 3px rgba(27,36,64,.3)}
   .stonechip{display:flex;align-items:center;gap:10px;background:var(--paper);border:1px solid var(--mist);border-radius:12px;padding:9px 12px;margin:0 0 10px;cursor:pointer}
   .stonechip .stoneorb{width:27px;height:27px}
-  body.aurora .stonechip{background:rgba(21,31,54,.6);border-color:rgba(201,162,39,.4)}
+  body.aurora .stonechip{background:rgba(14,22,48,.65);border-color:rgba(201,162,39,.4)}
 </style>
 <style>
   /* ===== v17: divider, form-control font, handwritten user text, today hero ===== */
   .dow{border-bottom:1px solid var(--mist);padding-bottom:5px;margin-bottom:6px}
   input,select{font-family:'Winky Sans',system-ui,sans-serif;font-weight:500}
   .addrow input{font-family:'Winky Sans',system-ui,sans-serif}
+  .infobtn{margin-left:6px;border:1.5px solid var(--mist);background:transparent;color:var(--mut);border-radius:50%;width:20px;height:20px;line-height:1;font-size:11px;cursor:pointer;vertical-align:middle;padding:0}
+  .infobox{display:none;font-size:12.5px;line-height:1.65;color:var(--mut);background:var(--mist);border-radius:10px;padding:9px 11px;margin-top:8px}
+  .infobox.show{display:block}
   .gennote{display:none}
   .nopcos .gennote{display:block}
   .nopcos .pcosnote{display:none!important}
-  #h-notes,#newtask,#h-project,#ed-note,#ed-proj{font-family:'Winky Rough','Winky Sans',cursive;font-weight:400;font-size:15.5px;line-height:1.55}
+  #h-notes,#newtask,#h-project,#ed-note,#ed-proj,#dw-dream{font-family:'Winky Rough','Winky Sans',cursive;font-weight:400;font-size:15.5px;line-height:1.55}
   #journal .tn{font-family:'Winky Rough','Winky Sans',cursive;font-size:15px;line-height:1.6}
   #journal .tn small{font-family:'Winky Sans',sans-serif;font-weight:600;display:block;color:var(--mut)}
   .todayhero{text-align:center;margin:4px 0 12px}
@@ -391,7 +400,8 @@
       <details id="donetasks-wrap" style="display:none"><summary>Completed</summary><div id="donetasks"></div></details>
     </div>
     <div class="card">
-      <h2>🍲 Today's macros <span class="sub" id="carbsub">net carbs = carbs − fiber</span></h2>
+      <h2>🍲 Today's macros <span class="sub" id="carbsub">net carbs = carbs − fiber</span><button class="infobtn" data-info="macros">ⓘ</button></h2>
+      <div class="infobox" id="info-macros"></div>
       <div class="macrogrid" id="macros-today"></div>
       <div class="ketoflag" id="ketoflag"></div>
     </div>
@@ -406,7 +416,8 @@
       </div>
     </div>
     <div class="card">
-      <h2>🧵 Daily threads <span class="sub" id="todaydate"></span></h2>
+      <h2>🧵 Daily threads <span class="sub" id="todaydate"></span><button class="infobtn" data-info="weave">ⓘ</button></h2>
+      <div class="infobox" id="info-weave"></div>
       <div class="habit"><div class="emoji">📖</div><div class="grow"><div class="name">Language &amp; letters</div><div class="meta">study, reading, writing · minutes today</div></div><input type="number" id="h-study" min="0" placeholder="0"></div>
       <div class="habit"><div class="emoji">💪</div><div class="grow"><div class="name">Exercise</div><div class="meta">any movement counts · minutes</div></div><input type="number" id="h-exercise" min="0" placeholder="0"></div>
       <div class="habit"><div class="emoji">📚</div><div class="grow"><div class="name">Other learning</div><div class="meta">reading, courses, research</div></div><button class="check" id="h-learning">✓</button></div>
@@ -440,6 +451,33 @@
       <h2>✍🏽 Note to self</h2>
       <textarea id="h-notes" placeholder="One kind sentence about today…"></textarea>
     </div>
+    <div class="card" id="dreamcard">
+      <h2>🌙 Dream Weave <span class="sub" id="dw-count"></span></h2>
+      <div class="delta" id="dw-done" style="display:none"></div>
+      <div id="dw-form">
+        <div class="addrow" style="margin-top:0">
+          <span class="sub" style="align-self:center">Slept</span>
+          <input type="time" id="dw-bed" value="21:00">
+          <span class="sub" style="align-self:center">→ woke</span>
+          <input type="time" id="dw-wake" value="05:00">
+        </div>
+        <div class="sub" style="margin-top:8px">How deep was the night?</div>
+        <div class="addrow" id="dw-q" style="justify-content:space-between;margin-top:4px"></div>
+        <textarea id="dw-dream" placeholder="a dream worth keeping? (optional)" style="margin-top:8px"></textarea>
+        <button class="primary" id="dw-save" style="width:100%;margin-top:10px">Weave the night 🌙</button>
+      </div>
+      <div id="dw-sky"></div>
+      <details style="margin-top:8px">
+        <summary style="font-size:13px;font-weight:700;color:var(--mut);cursor:pointer">🗒️ Recent nights</summary>
+        <div id="dw-list" style="margin-top:8px"></div>
+      </details>
+      <details style="margin-top:8px">
+        <summary style="font-size:13px;font-weight:700;color:var(--mut);cursor:pointer">🌌 The night sky grows</summary>
+        <div id="dw-const" style="margin-top:8px"></div>
+        <div class="gentle" style="margin-bottom:0">Each milestone adds something real to the app's own sky — look up at the header, or turn on Aurora mode and watch the whole heavens. Counted across all time; never a streak.</div>
+      </details>
+      <div class="gentle">Woven whenever you remember — a missed night never unravels anything. There is always room at the loom. 🧵</div>
+    </div>
   </section>
 
   <!-- ============ FOOD ============ -->
@@ -452,7 +490,9 @@
       </div>
       <div class="amtrow" id="amtrow" style="display:none">
         <b id="selname" style="flex:1;font-size:14px"></b>
-        <input type="number" id="fgrams" value="100" min="1"> <span class="sub">g</span>
+        <input type="number" id="fgrams" value="100" min="1">
+        <select id="funit" style="width:74px"><option>g</option><option>ml</option><option>tsp</option><option>tbsp</option><option>cup</option></select>
+        <span class="sub" id="gequiv"></span>
         <button class="primary" id="fadd">Add</button>
       </div>
       <details>
@@ -464,6 +504,7 @@
           <input type="number" id="cf-c" placeholder="carbs g" step="0.1">
           <input type="number" id="cf-fb" placeholder="fiber g" step="0.1">
           <input type="number" id="cf-f" placeholder="fat g" step="0.1">
+          <input type="number" id="cf-dens" placeholder="g per ml (optional — enables volume logging)" step="0.01">
           <button class="primary" id="cf-add">Save to my library</button>
         </div>
       </details>
@@ -476,6 +517,28 @@
         <button class="mini" id="savecombo" style="flex:1">💾 Save today as combo</button>
       </div>
       <div class="combos" id="combos"></div>
+    </div>
+    <div class="card">
+      <h2>🍳 Recipes <span class="sub">your dishes, per-serving accurate</span></h2>
+      <div id="reclist"><div class="sub">No recipes yet — build one from your ingredients.</div></div>
+      <button class="mini" id="rec-new" style="width:100%;margin-top:8px">＋ New recipe</button>
+      <div id="recbuilder" style="display:none">
+        <input type="text" id="rec-name" placeholder="recipe name…" style="width:100%;margin-top:10px">
+        <div class="addrow">
+          <span class="sub" style="align-self:center">Makes</span>
+          <input type="number" id="rec-serv" value="4" min="1" style="width:70px">
+          <span class="sub" style="align-self:center">servings</span>
+        </div>
+        <input type="text" id="rec-search" placeholder="add ingredient — search the library…" style="width:100%;margin-top:8px">
+        <div id="rec-results"></div>
+        <div id="rec-items"></div>
+        <div class="delta" id="rec-totals"></div>
+        <div class="addrow" style="margin-top:10px">
+          <button class="primary" id="rec-save" style="flex:1">Save recipe</button>
+          <button class="mini" id="rec-cancel">Cancel</button>
+        </div>
+      </div>
+      <div class="gentle">A recipe remembers its whole pot — log a serving and the macros come out right, every time.</div>
     </div>
     <div class="card">
       <h2>🧾 Today's log <span class="sub" id="foodkcal"></span></h2>
@@ -509,7 +572,8 @@
       </details>
     </div>
     <div class="card">
-      <h2>🧮 Macro calculator <button class="chip unitchip" style="margin-left:auto">kg · cm</button></h2>
+      <h2>🧮 Macro calculator <button class="infobtn" data-info="calc">ⓘ</button> <button class="chip unitchip" style="margin-left:auto">kg · cm</button></h2>
+      <div class="infobox" id="info-calc"></div>
       <div class="formgrid">
         <select id="mc-sex"><option value="F">Female</option><option value="M">Male</option></select>
         <input type="number" id="mc-age" placeholder="age">
@@ -700,7 +764,13 @@
       <div class="delta" id="mdelta"></div>
       <table class="mtable" id="mtable"></table>
       <div id="chart-weight"></div>
+      <div class="gentle" id="scalenote" style="display:none"></div>
       <div id="chart-waist"></div>
+      <div class="gentle" id="whtrbox" style="display:none"></div>
+      <details style="margin-top:10px">
+        <summary style="font-size:13px;font-weight:700;color:var(--mut);cursor:pointer">🌊 Why the scale jumps (and why it isn't fat)</summary>
+        <div class="gentle" style="margin-top:8px">The scale can swing ±2 kg overnight, and almost none of it is fat. The usual suspects: a salty meal (the body holds water for a day or two) · carbs after a low-carb stretch (every gram of stored glycogen carries 3–4 g of water — this is fuel, not fat) · a late or large meal still in transit · the week before a period (hormonal water, often 1–2 kg) · new or hard exercise (muscles hold water while they repair) · travel, poor sleep, or stress. Actual fat change needs roughly 7,700 kcal per kg — a single day simply can't do that in either direction. The gold line on the chart is the truth; single days are weather. 💙</div>
+      </details>
       <div class="gentle">The tape often moves before the scale does — that's why this tab exists. 💙</div>
     </div>
     <div class="card" id="cyclecard">
@@ -711,6 +781,7 @@
         <button class="mini" id="cyc-add">Add</button>
       </div>
       <div class="delta" id="cyc-stats"></div>
+      <div class="gentle" id="phasebox" style="display:none"></div>
       <div class="addrow" id="symprow" style="flex-wrap:wrap"></div>
       <div id="cyclist"></div>
       <div class="gentle pcosnote">With PCOS, cycle regularity is one of the clearest signs metabolic changes are working — and exactly what a doctor will ask about. Tap ✕ to unmark a day.</div>
@@ -719,20 +790,76 @@
   </section>
 </main>
 
-<div class="htools bottomtools"><button id="soundbtn" title="Chimes on/off">🔔</button><button id="aurorabtn" title="Aurora Moon mode">🌌</button></div>
+<div class="htools bottomtools"><button id="aboutbtn" title="About Lífsteinn">📜</button><button id="soundbtn" title="Chimes on/off">🔔</button><button id="aurorabtn" title="Aurora Mode">🌌</button></div>
 
 <div class="overlay" id="setupov"><div class="sheet">
-  <h2>🔮 Your Lífsteinn</h2>
-  <div class="sub">Choose your birth Moon, your day, and the stone that is yours. It appears on the Moons tab, and the app will know your birthday.</div>
-  <div class="addrow" style="margin-top:12px">
-    <select id="su-moon" style="flex:2"></select>
-    <input type="number" id="su-day" min="1" max="31" placeholder="day" style="flex:0 0 76px">
+  <div id="su-step1">
+    <div style="text-align:center;font-size:42px">💎</div>
+    <h2 style="justify-content:center">The Steinntaka</h2>
+    <div class="sub" style="text-align:center;line-height:1.8">Every Hverfolk carries a Lífsteinn — a life stone, bestowed at birth or at citizenship. Present at the first breath, present at the last. New citizens receive theirs at the Steinntaka, woven in at a moment that is about bonds, connection, and belonging.<br><br><b>Yours is waiting.</b></div>
+    <div class="addrow" style="margin-top:14px">
+      <button class="primary" id="su-begin" style="flex:1">Begin the ceremony</button>
+      <button class="mini" id="su-later">Wander first</button>
+    </div>
+    <div class="gentle" style="text-align:center">The Steinhöll is always open — your stone on the Moons tab leads back here.</div>
+    <button class="mini" id="su-about" style="width:100%;margin-top:6px">What is this app? 📜</button>
   </div>
-  <div class="stonegrid" id="su-stones"></div>
-  <div class="addrow" style="margin-top:14px">
-    <button class="primary" id="su-save" style="flex:1">Keep this stone</button>
-    <button class="mini" id="su-later">Later</button>
+  <div id="su-step2" style="display:none">
+    <h2>🌕 The Moon of your birth</h2>
+    <div class="sub">The stone is determined by the Moon of the bearer's birth.</div>
+    <div class="addrow" style="margin-top:12px">
+      <select id="su-moon" style="flex:2"></select>
+      <input type="number" id="su-day" min="1" max="31" placeholder="day" style="flex:0 0 76px">
+    </div>
+    <div class="addrow" style="margin-top:14px">
+      <button class="mini" id="su-back2">‹ back</button>
+      <button class="primary" id="su-next2" style="flex:1">Continue</button>
+    </div>
   </div>
+  <div id="su-step3" style="display:none">
+    <h2>🔮 The granting</h2>
+    <div class="sub">Which gem within your Moon's range is believed to be selected by the stone itself, or by fortune, depending on who is asked.</div>
+    <button class="primary" id="su-choose" style="width:100%;margin-top:12px">Let the stone choose ✨</button>
+    <div class="sub" id="su-chosen" style="text-align:center;margin-top:8px"></div>
+    <div class="gentle" style="margin-bottom:0">…or make a Steinhöll request and pick for yourself:</div>
+    <div class="stonegrid" id="su-stones"></div>
+    <div class="addrow" style="margin-top:14px">
+      <button class="mini" id="su-back3">‹ back</button>
+      <button class="primary" id="su-save" style="flex:1">Keep this stone</button>
+    </div>
+  </div>
+  <div id="su-step4" style="display:none">
+    <h2>⚖️ The counting</h2>
+    <div class="sub">How should Lífsteinn count your food? This sets the "macros met" rule and carb display — your kcal numbers come later, from the Macro calculator, whenever you're ready. Everything can be changed in Daily targets.</div>
+    <select id="su-diet" style="width:100%;margin-top:12px"></select>
+    <div class="addrow" style="margin-top:10px">
+      <span class="sub" style="align-self:center">Units:</span>
+      <button class="chip unitchip">kg · cm</button>
+    </div>
+    <div class="addrow" style="margin-top:14px">
+      <button class="mini" id="su-back4">‹ back</button>
+      <button class="primary" id="su-next4" style="flex:1">Continue</button>
+    </div>
+  </div>
+  <div id="su-step5" style="display:none">
+    <h2>🧵 The threads</h2>
+    <div class="sub">Choose what Lífsteinn weaves for you. Hiding a thread only tucks it away — every thread can be rewoven later, from the Loom tab.</div>
+    <div class="addrow" id="su-threads" style="flex-wrap:wrap;margin-top:12px"></div>
+    <div class="addrow" style="margin-top:14px">
+      <button class="mini" id="su-back5">‹ back</button>
+      <button class="primary" id="su-finish" style="flex:1">Complete the weaving</button>
+    </div>
+  </div>
+</div></div>
+
+<div class="overlay" id="aboutov"><div class="sheet">
+  <div style="text-align:center;font-size:38px">📜</div>
+  <h2 style="justify-content:center">What is Lífsteinn?</h2>
+  <div class="sub" style="line-height:1.85">A private companion for witnessing your days — named for the life stone every Hverfolk carries, from first breath to last.<br><br>
+  <b>It weaves together:</b> food, recipes &amp; fasting · movement, habits &amp; goals · cycle &amp; body · sleep &amp; dreams · a journal kept on a calendar of Moons. Every thread is optional — any of them can be tucked away on the Loom tab.<br><br>
+  <b>What it does:</b> lives entirely on this device · works offline · exports backups &amp; spreadsheets that are yours to keep · never punishes a missed day. There is always room at the loom.<br><br>
+  <b>What it doesn't do:</b> no accounts, no cloud, no ads, no feeds — and no medical advice. Lífsteinn witnesses; your doctor advises.</div>
+  <button class="primary" id="about-go" style="width:100%;margin-top:14px">Close</button>
 </div></div>
 
 <div class="overlay" id="bdayov"><div class="sheet" style="text-align:center">
@@ -793,7 +920,12 @@ const todayKey=()=>keyOf(new Date());
 const day=k=>{ if(!D.days[k]) D.days[k]={study:0,exercise:0,learning:false,project:'',projdone:false,notes:''}; return D.days[k]; };
 const $=id=>document.getElementById(id);
 let saveTimer=null; const save=()=>{clearTimeout(saveTimer);saveTimer=setTimeout(()=>store.save(D),400);};
-const toast=m=>{const t=$('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2100); if(/🎉|✨/.test(m)&&typeof chimeBig==='function') chimeBig();};
+const toast=m=>{const t=$('toast');t.onclick=null;t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2100); if(/🎉|✨/.test(m)&&typeof chimeBig==='function') chimeBig();};
+function undoToast(msg,fn){
+  const t=$('toast'); t.textContent=msg+' — tap to undo'; t.classList.add('show');
+  t.onclick=()=>{ t.onclick=null; t.classList.remove('show'); fn(); };
+  setTimeout(()=>{ if(t.textContent===msg+' — tap to undo'){ t.classList.remove('show'); t.onclick=null; } },5000);
+}
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 /* macros for a date */
@@ -804,6 +936,7 @@ function dayMacros(k){
   return m;
 }
 const DIET_RULES={'Standard keto':'keto','Strict keto':'keto','High-protein keto':'keto','Carnivore':'keto','Liberal low-carb':'keto','Moderate low-carb':'keto','Paleo-style':'keto','Balanced':'balanced','Mediterranean-style':'balanced','Plant-based / vegan':'balanced','Endurance / high-carb':'balanced','Low-fat high-carb':'balanced','High-protein balanced':'protein','Muscle building':'protein'};
+const pDense=f=>f.k>0&&(f.p*4/f.k)>=0.4; /* ≥40% of kcal from protein */
 const carbOf=m=>(D.carbMode==='total'?m.c:m.nc);
 const carbLabel=()=>(D.carbMode==='total'?'carbs':'net carbs');
 const carbAbbr=()=>(D.carbMode==='total'?'C':'NC');
@@ -815,9 +948,24 @@ const isOnTarget=k=>{ const m=dayMacros(k), T=D.targets, r=D.macroRule||'keto';
   return m.p>=T.p && carbOf(m)<=T.nc*1.1 && m.f<=T.f; };
 const weaveScore=k=>{ const d=D.days[k]; let s=0; if(d){ s+=(d.study>0)+(d.exercise>0)+(d.learning?1:0)+(d.projdone?1:0);} if(threadOn('food')&&isOnTarget(k)) s+=1; return s; };
 
+/* ========== ⓘ MICRO-EXPLAINERS ========== */
+const INFO={
+  weave:'The weave counts five daily threads — study, exercise, something learned, project progress, and macros met. Three or more makes a strong day. It\u2019s a witness, not a judge: a thin day doesn\u2019t unravel anything, and the loom is waiting again tomorrow. 🧵',
+  macros:'Net carbs = total carbs − fiber: the part your body actually digests for energy (you can switch to counting total carbs in Daily targets). The bars show today against your targets, and \u201cmacros met\u201d follows whichever rule you\u2019ve chosen — keto, balanced, high-protein, or kcal-only.',
+  calc:'BMR is roughly what your body would burn lying still all day; TDEE multiplies it by how active you are. Even good formulas only guess within about ±10% — your real number shows up in 2–3 weeks of results, which is why this is a starting line, not a verdict.'
+};
+document.querySelectorAll('.infobtn').forEach(b=>{
+  b.onclick=()=>{
+    const box=$('info-'+b.dataset.info); if(!box) return;
+    if(!box.innerHTML) box.innerHTML=INFO[b.dataset.info]||'';
+    box.classList.toggle('show');
+  };
+});
+
 /* ========== THREADS (choose what Lífsteinn weaves) ========== */
-const THREADS=[['food','🍲 Food'],['fast','⏳ Fasting'],['cycle','🩸 Cycle'],['pcos','🌸 PCOS notes']];
-function threadOn(id){ const t=D.threads||{}; return t[id]!==false; }
+const THREADS=[['food','🍲 Food'],['fast','⏳ Fasting'],['cycle','🩸 Cycle'],['sleep','🌙 Dream Weave'],['pcos','🌸 PCOS notes'],['whtr','📐 Waist-to-height']];
+const THREADS_OPTIN=['whtr'];
+function threadOn(id){ const t=D.threads||{}; if(id in t) return t[id]!==false; return THREADS_OPTIN.indexOf(id)===-1; }
 function renderThreads(){
   const w=$('threadrow'); if(!w) return;
   w.innerHTML='';
@@ -835,6 +983,8 @@ function applyThreads(){
       if(!threadOn(id)&&b.classList.contains('on')){ const t=document.querySelector('button[data-tab="today"]'); if(t) t.click(); } }
   });
   const cc=$('cyclecard'); if(cc) cc.style.display=threadOn('cycle')?'':'none';
+  const dc=$('dreamcard'); if(dc) dc.style.display=threadOn('sleep')?'':'none';
+  if(typeof renderWHtR==='function') renderWHtR();
   document.body.classList.toggle('nopcos',!threadOn('pcos'));
   if(typeof renderWeave==='function'&&$('weavefill')) renderWeave();
 }
@@ -868,37 +1018,39 @@ $('proverb').onclick=()=>{pvIdx=(pvIdx+1)%PROVERBS.length;renderProverb();};
 /* ========== FOOD DATABASE (category, name, kcal, protein, carbs, fiber, fat per 100 g) ========== */
 const FOODS=[
 /* Meat */
-['Meat','Ground beef 80/20, cooked',254,25.9,0,0,16.2],['Meat','Ground beef 90/10, cooked',176,26,0,0,8],['Meat','Ribeye steak, grilled',291,24,0,0,21.8],['Meat','Sirloin steak, grilled',201,29,0,0,9],['Meat','Beef chuck roast',282,26,0,0,19],['Meat','Beef short ribs, cooked',295,26,0,0,21],['Meat','Beef liver, cooked',175,26.5,5.1,0,4.7],['Meat','Beef tongue (gyutan)',284,19,0,0,22],['Meat','Yakiniku karubi (beef)',420,13,0.2,0,40],['Meat','Corned beef',251,27,0,0,15],['Meat','Beef jerky',410,33,11,1.8,26],['Meat','Venison',158,30,0,0,3.2],['Meat','Pork belly',518,9.3,0,0,53],['Meat','Pork chop, cooked',231,25.7,0,0,13.6],['Meat','Pork shoulder, roasted',269,25,0,0,18],['Meat','Ground pork, cooked',297,25.7,0,0,20.8],['Meat','Bacon, cooked',541,37,1.4,0,42],['Meat','Ham, sliced',145,21,1.5,0,5.5],['Meat','Spam',315,13.4,4.6,0,26.6],['Meat','Pork sausage',301,17,2,0,25],['Meat','Chorizo',455,24,2,0,38],['Meat','Salami',336,22,1.2,0,26],['Meat','Pepperoni',494,23,1.2,0,44],['Meat','Prosciutto',250,25,0,0,17],['Meat','Hot dog frank',290,10,4,0,26],['Meat','Lamb chop, cooked',294,25,0,0,21],['Meat','Ground lamb, cooked',283,24.8,0,0,19.7],
+['Meat','Ground beef 80/20, cooked',254,25.9,0,0,16.2],['Meat','Ground beef 90/10, cooked',217,26.1,0,0,11.8],['Meat','Ribeye steak, grilled',291,24,0,0,21.8],['Meat','Sirloin steak, grilled',257,26.8,0,0,15.8],['Meat','Beef chuck roast',282,26,0,0,19],['Meat','Beef short ribs, cooked',295,26,0,0,21],['Meat','Beef liver, cooked',191,29.1,5.1,0,5.3],['Meat','Beef tongue (gyutan)',284,19,0,0,22],['Meat','Yakiniku karubi (beef)',420,13,0.2,0,40],['Meat','Corned beef',251,18.2,0.5,0,19],['Meat','Beef jerky',410,33,11,1.8,26],['Meat','Venison',158,30,0,0,3.2],['Meat','Pork belly',518,9.3,0,0,53],['Meat','Pork chop, cooked',209,25.6,0,0,11.1],['Meat','Pork shoulder, roasted',269,25,0,0,18],['Meat','Ground pork, cooked',297,25.7,0,0,20.8],['Meat','Bacon, cooked',541,37,1.4,0,42],['Meat','Ham, sliced',163,16.6,3.8,1.3,8.6],['Meat','Spam',315,13.4,4.6,0,26.6],['Meat','Pork sausage',325,18.5,1.4,0,27.2],['Meat','Chorizo',455,24,2,0,38],['Meat','Salami',336,22,1.2,0,26],['Meat','Pepperoni',504,19.2,1.2,0,46.3],['Meat','Prosciutto',250,25,0,0,17],['Meat','Hot dog frank',316,11.2,3.4,0,28.3],['Meat','Lamb chop, cooked',316,25.2,0,0,23.1],['Meat','Ground lamb, cooked',283,24.8,0,0,19.7],
 /* Poultry */
-['Poultry','Chicken breast, roasted',165,31,0,0,3.6],['Poultry','Chicken thigh, skin-on, roasted',232,23.3,0,0,15.5],['Poultry','Chicken thigh, skinless, cooked',209,26,0,0,10.9],['Poultry','Chicken wing, roasted',290,27,0,0,19.5],['Poultry','Chicken drumstick, cooked',216,27,0,0,11.2],['Poultry','Rotisserie chicken (avg)',190,25,0,0,10],['Poultry','Ground chicken, cooked',189,24,0,0,10.2],['Poultry','Chicken skin, cooked',454,20,0,0,40.7],['Poultry','Chicken liver, cooked',167,24.5,0.9,0,6.5],['Poultry','Chicken heart, cooked',185,26.4,0.1,0,7.9],['Poultry','Ground turkey, cooked',203,27,0,0,10.4],['Poultry','Turkey breast, roasted',147,30,0,0,2.1],['Poultry','Duck breast, roasted',202,23.5,0,0,11.2],['Poultry','Duck with skin, roasted',337,19,0,0,28.4],['Poultry','Quail egg (1 ≈ 9g)',158,13,0.4,0,11],
+['Poultry','Chicken breast, roasted',165,31,0,0,3.6],['Poultry','Chicken thigh, skin-on, roasted',232,23.3,0,0,15.5],['Poultry','Chicken thigh, skinless, cooked',179,24.8,0,0,8.2],['Poultry','Chicken wing, roasted',254,23.8,0,0,16.9],['Poultry','Chicken drumstick, cooked',191,23.4,0,0,10.2],['Poultry','Rotisserie chicken (avg)',190,25,0,0,10],['Poultry','Ground chicken, cooked',189,24,0,0,10.2],['Poultry','Chicken skin, cooked',454,20,0,0,40.7],['Poultry','Chicken liver, cooked',167,24.5,0.9,0,6.5],['Poultry','Chicken heart, cooked',185,26.4,0.1,0,7.9],['Poultry','Ground turkey, cooked',203,27,0,0,10.4],['Poultry','Turkey breast, roasted',136,29.5,0,0,2],['Poultry','Duck breast, roasted',202,23.5,0,0,11.2],['Poultry','Duck with skin, roasted',337,19,0,0,28.4],['Poultry','Quail egg (1 ≈ 9g)',158,13,0.4,0,11],
 /* Seafood */
-['Seafood','Salmon, cooked',206,22.1,0,0,12.4],['Seafood','Salmon sashimi',208,20.4,0,0,13.4],['Seafood','Smoked salmon',117,18.3,0,0,4.3],['Seafood','Salmon, canned',167,23,0,0,8],['Seafood','Mackerel (saba), grilled',262,23.9,0,0,17.8],['Seafood','Saba, canned in water',190,21,0.2,0,11],['Seafood','Tuna sashimi (maguro)',144,23.3,0,0,4.9],['Seafood','Tuna, canned in water',116,25.5,0,0,0.8],['Seafood','Tuna, canned in oil',198,29.1,0,0,8.2],['Seafood','Yellowtail (hamachi/buri)',146,20,0,0,6.7],['Seafood','Sea bream (tai)',100,20.9,0,0,1.3],['Seafood','Cod, cooked',105,22.8,0,0,0.9],['Seafood','Pollock, cooked',92,19.4,0,0,1],['Seafood','Tilapia, cooked',129,26.2,0,0,2.7],['Seafood','Sardines, canned in oil',208,24.6,0,0,11.5],['Seafood','Anchovies',210,29,0,0,10],['Seafood','Herring',203,23,0,0,11.6],['Seafood','Unagi (eel), kabayaki',255,23,3.1,0,17],['Seafood','Shrimp, cooked',99,24,0.2,0,0.3],['Seafood','Crab meat',97,19.4,0,0,1.5],['Seafood','Kanikama (imitation crab)',95,7.6,15,0.5,0.5],['Seafood','Lobster, cooked',89,19,0,0,0.9],['Seafood','Scallops',111,20.5,5.4,0,0.8],['Seafood','Squid (ika), raw',92,15.6,3.1,0,1.4],['Seafood','Octopus (tako), cooked',164,29.8,4.4,0,2.1],['Seafood','Oysters, raw',81,9.5,4.9,0,2.3],['Seafood','Mussels, cooked',172,23.8,7.4,0,4.5],['Seafood','Clams (asari)',86,14.7,3.6,0,1],['Seafood','Ikura (salmon roe)',250,29,2.9,0,14],['Seafood','Mentaiko / tarako',131,24,3,0,2.4],['Seafood','Shishamo, grilled',177,21,0.5,0,10],['Seafood','Hokke, grilled',176,20,0.1,0,10.5],['Seafood','Chikuwa',121,12.2,13.5,0,2],['Seafood','Kamaboko / surimi',95,12,9.7,0,0.9],
+['Seafood','Salmon, cooked',206,22.1,0,0,12.4],['Seafood','Salmon sashimi',208,20.4,0,0,13.4],['Seafood','Smoked salmon',117,18.3,0,0,4.3],['Seafood','Salmon, canned',167,23,0,0,8],['Seafood','Mackerel (saba), grilled',262,23.9,0,0,17.8],['Seafood','Saba, canned in water',190,21,0.2,0,11],['Seafood','Tuna sashimi (maguro)',144,23.3,0,0,4.9],['Seafood','Tuna, canned in water',86,19.4,0,0,1],['Seafood','Tuna, canned in oil',198,29.1,0,0,8.2],['Seafood','Yellowtail (hamachi/buri)',146,20,0,0,6.7],['Seafood','Sea bream (tai)',100,20.9,0,0,1.3],['Seafood','Cod, cooked',105,22.8,0,0,0.9],['Seafood','Pollock, cooked',118,24.9,0,0,1.3],['Seafood','Tilapia, cooked',129,26.2,0,0,2.7],['Seafood','Sardines, canned in oil',208,24.6,0,0,11.5],['Seafood','Anchovies',210,29,0,0,10],['Seafood','Herring',203,23,0,0,11.6],['Seafood','Unagi (eel), kabayaki',255,23,3.1,0,17],['Seafood','Shrimp, cooked',99,24,0.2,0,0.3],['Seafood','Crab meat',97,19.4,0,0,1.5],['Seafood','Kanikama (imitation crab)',95,7.6,15,0.5,0.5],['Seafood','Lobster, cooked',89,19,0,0,0.9],['Seafood','Scallops',111,20.5,5.4,0,0.8],['Seafood','Squid (ika), raw',92,15.6,3.1,0,1.4],['Seafood','Octopus (tako), cooked',164,29.8,4.4,0,2.1],['Seafood','Oysters, raw',51,5.7,2.7,0,1.7],['Seafood','Mussels, cooked',172,23.8,7.4,0,4.5],['Seafood','Clams (asari)',86,14.7,3.6,0,1],['Seafood','Ikura (salmon roe)',250,29,2.9,0,14],['Seafood','Mentaiko / tarako',131,24,3,0,2.4],['Seafood','Shishamo, grilled',177,21,0.5,0,10],['Seafood','Hokke, grilled',176,20,0.1,0,10.5],['Seafood','Chikuwa',121,12.2,13.5,0,2],['Seafood','Kamaboko / surimi',95,12,9.7,0,0.9],
 /* Eggs & Dairy */
-['Eggs & Dairy','Egg, boiled (1 lg ≈ 50g)',155,12.6,1.1,0,10.6],['Eggs & Dairy','Egg, fried',196,13.6,0.8,0,14.8],['Eggs & Dairy','Egg white',52,10.9,0.7,0,0.2],['Eggs & Dairy','Egg yolk',322,15.9,3.6,0,26.5],['Eggs & Dairy','Tamagoyaki',146,10,6.4,0,9],['Eggs & Dairy','Cheddar cheese',403,24.9,1.3,0,33.1],['Eggs & Dairy','Mozzarella',280,27.5,2.2,0,17.1],['Eggs & Dairy','Cream cheese',342,5.9,4.1,0,34.2],['Eggs & Dairy','Parmesan',392,35.8,3.2,0,25.8],['Eggs & Dairy','Gouda',356,25,2.2,0,27],['Eggs & Dairy','Brie',334,20.8,0.5,0,27.7],['Eggs & Dairy','Camembert',300,19.8,0.5,0,24.3],['Eggs & Dairy','Blue cheese',353,21.4,2.3,0,28.7],['Eggs & Dairy','Swiss cheese',380,27,5.4,0,27.8],['Eggs & Dairy','Feta',264,14.2,4.1,0,21.3],['Eggs & Dairy','Halloumi',321,22,2.2,0,25],['Eggs & Dairy','Goat cheese, soft',264,18.5,0.1,0,21.1],['Eggs & Dairy','Ricotta',174,11.3,3,0,13],['Eggs & Dairy','Mascarpone',429,4.8,4.8,0,44],['Eggs & Dairy','Processed cheese slice',337,16,7,0,28],['Eggs & Dairy','Butter',717,0.9,0.1,0,81.1],['Eggs & Dairy','Heavy cream',340,2.8,2.7,0,36.1],['Eggs & Dairy','Sour cream',198,2.4,4.6,0,19.4],['Eggs & Dairy','Half and half',131,3.1,4.3,0,11.5],['Eggs & Dairy','Greek yogurt, full-fat plain',97,9,3.9,0,5],['Eggs & Dairy','Greek yogurt, nonfat plain',59,10.2,3.6,0,0.4],['Eggs & Dairy','Yogurt, plain',61,3.5,4.7,0,3.3],['Eggs & Dairy','Cottage cheese 4%',98,11.1,3.4,0,4.3],['Eggs & Dairy','Whole milk',61,3.2,4.8,0,3.3],['Eggs & Dairy','Almond milk, unsweetened',15,0.6,0.6,0.3,1.2],['Eggs & Dairy','Soy milk, unsweetened',33,3.3,1.2,0.2,1.8],
+['Eggs & Dairy','Egg, boiled (1 lg ≈ 50g)',155,12.6,1.1,0,10.6],['Eggs & Dairy','Egg, fried',196,13.6,0.8,0,14.8],['Eggs & Dairy','Egg white',52,10.9,0.7,0,0.2],['Eggs & Dairy','Egg yolk',322,15.9,3.6,0,26.5],['Eggs & Dairy','Tamagoyaki',146,10,6.4,0,9],['Eggs & Dairy','Cheddar cheese',404,22.9,3.1,0,33.3],['Eggs & Dairy','Mozzarella',300,22.2,2.2,0,22.4],['Eggs & Dairy','Cream cheese',350,6.2,5.5,0,34.4],['Eggs & Dairy','Parmesan',420,28.4,13.9,0,27.8],['Eggs & Dairy','Gouda',356,25,2.2,0,27],['Eggs & Dairy','Brie',334,20.8,0.5,0,27.7],['Eggs & Dairy','Camembert',300,19.8,0.5,0,24.3],['Eggs & Dairy','Blue cheese',353,21.4,2.3,0,28.7],['Eggs & Dairy','Swiss cheese',393,27,1.4,0,31],['Eggs & Dairy','Feta',264,14.2,4.1,0,21.3],['Eggs & Dairy','Halloumi',321,22,2.2,0,25],['Eggs & Dairy','Goat cheese, soft',264,18.5,0.1,0,21.1],['Eggs & Dairy','Ricotta',174,11.3,3,0,13],['Eggs & Dairy','Mascarpone',429,4.8,4.8,0,44],['Eggs & Dairy','Processed cheese slice',337,16,7,0,28],['Eggs & Dairy','Butter',717,0.9,0.1,0,81.1],['Eggs & Dairy','Heavy cream',340,2.8,2.7,0,36.1],['Eggs & Dairy','Sour cream',198,2.4,4.6,0,19.4],['Eggs & Dairy','Half and half',123,3.1,4.7,0,10.4],['Eggs & Dairy','Greek yogurt, full-fat plain',97,9,3.9,0,5],['Eggs & Dairy','Greek yogurt, nonfat plain',59,10.2,3.6,0,0.4],['Eggs & Dairy','Yogurt, plain',61,3.5,4.7,0,3.3],['Eggs & Dairy','Cottage cheese 4%',98,11.1,3.4,0,4.3],['Eggs & Dairy','Whole milk',61,3.2,4.8,0,3.3],['Eggs & Dairy','Almond milk, unsweetened',15,0.6,0.6,0.3,1.2],['Eggs & Dairy','Soy milk, unsweetened',33,3.3,1.2,0.2,1.8],
 /* Soy & JP Staples */
-['Soy & JP Staples','Tofu, firm',144,17.3,2.8,2.3,8.7],['Soy & JP Staples','Tofu, silken',55,4.8,2.9,0.2,2.7],['Soy & JP Staples','Atsuage (thick fried tofu)',150,10.7,0.9,0.7,11.3],['Soy & JP Staples','Aburaage',377,23,2.5,1.1,31.4],['Soy & JP Staples','Natto',212,19.4,12.7,5.4,11],['Soy & JP Staples','Tempeh',193,18.5,9.4,7,10.8],['Soy & JP Staples','Okara',111,6.1,13.8,11.5,3.6],['Soy & JP Staples','Edamame, shelled',121,11.9,8.9,5.2,5.2],['Soy & JP Staples','Miso paste',199,11.7,26.5,5.4,6],['Soy & JP Staples','Shirataki noodles',9,0.2,3,3,0],['Soy & JP Staples','Konnyaku',10,0.1,3.3,3,0.1],['Soy & JP Staples','Soy sauce',53,8.1,4.9,0.8,0.6],['Soy & JP Staples','Tamari',60,10.5,5.6,0.8,0.1],['Soy & JP Staples','Nori (1 sheet ≈ 3g)',188,32,41,31,0.3],['Soy & JP Staples','Wakame, raw',45,3,9.1,0.5,0.6],['Soy & JP Staples','Mozuku',4,0.2,1.4,1.4,0.1],['Soy & JP Staples','Hijiki, dried',149,10.6,56.2,51.8,1.3],['Soy & JP Staples','Umeboshi',33,0.9,10.5,3.6,0.2],['Soy & JP Staples','Takuan (pickled daikon)',27,0.6,6.2,1.6,0.1],['Soy & JP Staples','Kimchi',15,1.1,2.4,1.6,0.5],['Soy & JP Staples','Dashi broth',2,0.3,0.3,0,0],['Soy & JP Staples','Katsuobushi flakes',324,75,0,0,3],
+['Soy & JP Staples','Tofu, firm',144,17.3,2.8,2.3,8.7],['Soy & JP Staples','Tofu, silken',61,7.2,1.2,0.2,3.7],['Soy & JP Staples','Atsuage (thick fried tofu)',150,10.7,0.9,0.7,11.3],['Soy & JP Staples','Aburaage',377,23,2.5,1.1,31.4],['Soy & JP Staples','Natto',212,19.4,12.7,5.4,11],['Soy & JP Staples','Tempeh',192,20.3,9.4,7,10.8],['Soy & JP Staples','Okara',111,6.1,13.8,11.5,3.6],['Soy & JP Staples','Edamame, shelled',121,11.9,8.9,5.2,5.2],['Soy & JP Staples','Miso paste',199,11.7,26.5,5.4,6],['Soy & JP Staples','Shirataki noodles',9,0.2,3,3,0],['Soy & JP Staples','Konnyaku',10,0.1,3.3,3,0.1],['Soy & JP Staples','Soy sauce',53,8.1,4.9,0.8,0.6],['Soy & JP Staples','Tamari',60,10.5,5.6,0.8,0.1],['Soy & JP Staples','Nori (1 sheet ≈ 3g)',188,32,41,31,0.3],['Soy & JP Staples','Wakame, raw',45,3,9.1,0.5,0.6],['Soy & JP Staples','Mozuku',4,0.2,1.4,1.4,0.1],['Soy & JP Staples','Hijiki, dried',149,10.6,56.2,51.8,1.3],['Soy & JP Staples','Umeboshi',33,0.9,10.5,3.6,0.2],['Soy & JP Staples','Takuan (pickled daikon)',27,0.6,6.2,1.6,0.1],['Soy & JP Staples','Kimchi',15,1.1,2.4,1.6,0.5],['Soy & JP Staples','Dashi broth',2,0.3,0.3,0,0],['Soy & JP Staples','Katsuobushi flakes',324,75,0,0,3],
 /* Vegetables */
 ['Vegetables','Spinach, raw',23,2.9,3.6,2.2,0.4],['Vegetables','Komatsuna',14,1.5,2.4,1.9,0.2],['Vegetables','Cabbage',25,1.3,5.8,2.5,0.1],['Vegetables','Napa cabbage (hakusai)',16,1.2,3.2,1.2,0.2],['Vegetables','Broccoli',34,2.8,6.6,2.6,0.4],['Vegetables','Cauliflower',25,1.9,5,2,0.3],['Vegetables','Cauliflower rice',25,1.9,5,2,0.3],['Vegetables','Zucchini',17,1.2,3.1,1,0.3],['Vegetables','Cucumber',15,0.7,3.6,0.5,0.1],['Vegetables','Bell pepper',31,1,6,2.1,0.3],['Vegetables','Shishito pepper',30,1.6,5.5,3,0.3],['Vegetables','Daikon',18,0.6,4.1,1.6,0.1],['Vegetables','Eggplant (nasu)',25,1,5.9,3,0.2],['Vegetables','Shiitake, raw',34,2.2,6.8,2.5,0.5],['Vegetables','White mushrooms',22,3.1,3.3,1,0.3],['Vegetables','Enoki',37,2.7,7.8,2.7,0.3],['Vegetables','Eringi (king oyster)',35,2.5,6.5,3.4,0.3],['Vegetables','Maitake',31,1.9,7,2.7,0.2],['Vegetables','Shimeji',18,1.6,3.7,2.5,0.3],['Vegetables','Green beans',31,1.8,7,2.7,0.2],['Vegetables','Asparagus',20,2.2,3.9,2.1,0.1],['Vegetables','Okra',33,1.9,7.5,3.2,0.2],['Vegetables','Bok choy',13,1.5,2.2,1,0.2],['Vegetables','Lettuce, romaine',17,1.2,3.3,2.1,0.3],['Vegetables','Lettuce, iceberg',14,0.9,3,1.2,0.1],['Vegetables','Kale',49,4.3,8.8,3.6,0.9],['Vegetables','Arugula',25,2.6,3.7,1.6,0.7],['Vegetables','Mizuna',23,2.2,4.8,1.8,0.1],['Vegetables','Tomato',18,0.9,3.9,1.2,0.2],['Vegetables','Cherry tomatoes',18,0.9,3.9,1.2,0.2],['Vegetables','Onion',40,1.1,9.3,1.7,0.1],['Vegetables','Green onion (negi)',32,1.8,7.3,2.6,0.2],['Vegetables','Nira (garlic chives)',30,2,4.4,2.5,0.6],['Vegetables','Garlic (1 clove ≈ 5g)',149,6.4,33.1,2.1,0.5],['Vegetables','Ginger',80,1.8,17.8,2,0.8],['Vegetables','Bean sprouts (moyashi)',30,3,5.9,1.8,0.2],['Vegetables','Brussels sprouts',43,3.4,9,3.8,0.3],['Vegetables','Celery',14,0.7,3,1.6,0.2],['Vegetables','Radish',16,0.7,3.4,1.6,0.1],['Vegetables','Turnip (kabu)',28,0.9,6.4,1.8,0.1],['Vegetables','Carrot',41,0.9,9.6,2.8,0.2],['Vegetables','Kabocha squash',49,1.4,12.2,2.5,0.2],['Vegetables','Gobo (burdock)',72,1.5,17.3,3.3,0.1],['Vegetables','Renkon (lotus root)',74,2.6,17.2,4.9,0.1],['Vegetables','Snap peas',42,2.8,7.6,2.6,0.2],['Vegetables','Leek',61,1.5,14.2,1.8,0.3],['Vegetables','Goya (bitter melon)',17,1,3.7,2.8,0.2],['Vegetables','Seaweed salad',70,1,12,1,3],['Vegetables','Olives, green',145,1,3.8,3.3,15.3],['Vegetables','Olives, black',115,0.8,6.3,3.2,10.7],['Vegetables','Dill pickles',11,0.3,2.3,1.2,0.2],
 /* Fruits */
 ['Fruits','Avocado (1 med ≈ 150g)',160,2,8.5,6.7,14.7],['Fruits','Strawberries',32,0.7,7.7,2,0.3],['Fruits','Blueberries',57,0.7,14.5,2.4,0.3],['Fruits','Raspberries',52,1.2,11.9,6.5,0.7],['Fruits','Blackberries',43,1.4,9.6,5.3,0.5],['Fruits','Lemon juice',22,0.4,6.9,0.3,0.2],['Fruits','Lime juice',25,0.4,8.4,0.4,0.1],['Fruits','Mango',60,0.8,15,1.6,0.4],['Fruits','Banana',89,1.1,22.8,2.6,0.3],['Fruits','Apple',52,0.3,13.8,2.4,0.2],['Fruits','Orange',47,0.9,11.8,2.4,0.1],['Fruits','Mikan',53,0.8,13.3,1.8,0.3],['Fruits','Grapefruit',42,0.8,10.7,1.6,0.1],['Fruits','Watermelon',30,0.6,7.6,0.4,0.2],['Fruits','Grapes',69,0.7,18.1,0.9,0.2],['Fruits','Kiwi',61,1.1,14.7,3,0.5],['Fruits','Pineapple',50,0.5,13.1,1.4,0.1],['Fruits','Peach',39,0.9,9.5,1.5,0.3],['Fruits','Persimmon (kaki)',70,0.6,18.6,3.6,0.2],['Fruits','Nashi pear',43,0.5,11.3,3.6,0.2],['Fruits','Papaya',43,0.5,10.8,1.7,0.3],['Fruits','Guava',68,2.6,14.3,5.4,1],['Fruits','Coconut meat, fresh',354,3.3,15.2,9,33.5],
 /* Nuts & Seeds */
-['Nuts & Seeds','Almonds',579,21.2,21.6,12.5,49.9],['Nuts & Seeds','Walnuts',654,15.2,13.7,6.7,65.2],['Nuts & Seeds','Macadamia nuts',718,7.9,13.8,8.6,75.8],['Nuts & Seeds','Pecans',691,9.2,13.9,9.6,72],['Nuts & Seeds','Cashews',553,18.2,30.2,3.3,43.8],['Nuts & Seeds','Pistachios',560,20.2,27.2,10.6,45.3],['Nuts & Seeds','Hazelnuts',628,15,16.7,9.7,60.8],['Nuts & Seeds','Brazil nuts',659,14.3,11.7,7.5,67.1],['Nuts & Seeds','Peanuts',567,25.8,16.1,8.5,49.2],['Nuts & Seeds','Peanut butter, natural',588,25.1,20,6,50],['Nuts & Seeds','Almond butter',614,21,18.8,10.3,55.5],['Nuts & Seeds','Chia seeds',486,16.5,42.1,34.4,30.7],['Nuts & Seeds','Flaxseed, ground',534,18.3,28.9,27.3,42.2],['Nuts & Seeds','Sesame seeds',573,17.7,23.4,11.8,49.7],['Nuts & Seeds','Pumpkin seeds',559,30.2,10.7,6,49.1],['Nuts & Seeds','Sunflower seeds',584,20.8,20,8.6,51.5],['Nuts & Seeds','Hemp hearts',553,31.6,8.7,4,48.8],['Nuts & Seeds','Pine nuts',673,13.7,13.1,3.7,68.4],['Nuts & Seeds','Shredded coconut, unsweetened',660,6.9,23.7,16.3,64.5],['Nuts & Seeds','Almond flour',571,21.4,21.4,10.7,50],
+['Nuts & Seeds','Almonds',579,21.2,21.6,12.5,49.9],['Nuts & Seeds','Walnuts',654,15.2,13.7,6.7,65.2],['Nuts & Seeds','Macadamia nuts',718,7.9,13.8,8.6,75.8],['Nuts & Seeds','Pecans',691,9.2,13.9,9.6,72],['Nuts & Seeds','Cashews',553,18.2,30.2,3.3,43.8],['Nuts & Seeds','Pistachios',560,20.2,27.2,10.6,45.3],['Nuts & Seeds','Hazelnuts',628,15,16.7,9.7,60.8],['Nuts & Seeds','Brazil nuts',659,14.3,11.7,7.5,67.1],['Nuts & Seeds','Peanuts',567,25.8,16.1,8.5,49.2],['Nuts & Seeds','Peanut butter, natural',598,22.2,22.3,5,51.4],['Nuts & Seeds','Almond butter',614,21,18.8,10.3,55.5],['Nuts & Seeds','Chia seeds',486,16.5,42.1,34.4,30.7],['Nuts & Seeds','Flaxseed, ground',534,18.3,28.9,27.3,42.2],['Nuts & Seeds','Sesame seeds',573,17.7,23.4,11.8,49.7],['Nuts & Seeds','Pumpkin seeds',559,30.2,10.7,6,49.1],['Nuts & Seeds','Sunflower seeds',584,20.8,20,8.6,51.5],['Nuts & Seeds','Hemp hearts',553,31.6,8.7,4,48.8],['Nuts & Seeds','Pine nuts',673,13.7,13.1,3.7,68.4],['Nuts & Seeds','Shredded coconut, unsweetened',660,6.9,23.7,16.3,64.5],['Nuts & Seeds','Almond flour',571,21.4,21.4,10.7,50],
 /* Fats & Oils */
-['Fats & Oils','Olive oil',884,0,0,0,100],['Fats & Oils','Avocado oil',884,0,0,0,100],['Fats & Oils','Coconut oil',892,0,0,0,99.1],['Fats & Oils','MCT oil',855,0,0,0,100],['Fats & Oils','Sesame oil',884,0,0,0,100],['Fats & Oils','Ghee',900,0,0,0,100],['Fats & Oils','Lard',902,0,0,0,100],['Fats & Oils','Beef tallow',902,0,0,0,100],['Fats & Oils','Mayonnaise (Kewpie)',700,1.5,2.1,0,76],['Fats & Oils','Avocado oil mayo',700,1,0.5,0,78],['Fats & Oils','Coconut milk, canned',197,2,2.8,0,21.3],['Fats & Oils','Coconut cream',330,2.3,6.6,2.2,32.2],
+['Fats & Oils','Olive oil',884,0,0,0,100],['Fats & Oils','Avocado oil',884,0,0,0,100],['Fats & Oils','Coconut oil',892,0,0,0,99.1],['Fats & Oils','MCT oil',855,0,0,0,100],['Fats & Oils','Sesame oil',884,0,0,0,100],['Fats & Oils','Ghee',900,0,0,0,100],['Fats & Oils','Lard',902,0,0,0,100],['Fats & Oils','Beef tallow',902,0,0,0,100],['Fats & Oils','Mayonnaise (Kewpie)',700,1.5,2.1,0,76],['Fats & Oils','Avocado oil mayo',700,1,0.5,0,78],['Fats & Oils','Coconut milk, canned',197,2,2.8,0,21.3],['Fats & Oils','Coconut cream',330,3.6,6.7,2.2,34.7],
 /* Carbs & Grains (ref) */
-['Grains & Breads','White rice, cooked',130,2.7,28.2,0.4,0.3],['Grains & Breads','Brown rice, cooked',112,2.3,23.5,1.8,0.8],['Grains & Breads','Red rice (Chamorro), cooked',145,2.5,30,0.6,1.5],['Grains & Breads','Onigiri (plain, 1 ≈ 110g)',168,3,36,0.4,0.5],['Grains & Breads','Bread, white (1 slice ≈ 30g)',266,8.9,50.6,2.4,3.3],['Grains & Breads','Shokupan (1 thick slice ≈ 60g)',260,9,49,2.3,3.7],['Grains & Breads','Almond flour bread (typical)',280,10,10,6,23],['Grains & Breads','Low-carb tortilla (typical)',190,9,32,22,5],['Grains & Breads','Flour tortilla',306,8.2,50,3,7.7],['Grains & Breads','Titiyas (Chamorro flatbread)',310,7,52,2,8],['Grains & Breads','Udon, cooked',105,2.6,21.4,0.8,0.4],['Grains & Breads','Soba, cooked',99,5.1,21.4,1.5,0.1],['Grains & Breads','Ramen noodles, cooked',138,4.5,27,1,1],['Grains & Breads','Pasta, cooked',158,5.8,30.9,1.8,0.9],['Grains & Breads','Quinoa, cooked',120,4.4,21.3,2.8,1.9],['Grains & Breads','Oatmeal, cooked',71,2.5,12,1.7,1.5],['Grains & Breads','Sweet potato, cooked',90,2,20.7,3.3,0.2],['Grains & Breads','Satsumaimo, baked',151,1.2,35,2.9,0.2],['Grains & Breads','Potato, cooked',87,1.9,20.1,1.8,0.1],['Grains & Breads','Corn',96,3.4,21,2.4,1.5],
+['Grains & Breads','White rice, cooked',130,2.7,28.2,0.4,0.3],['Grains & Breads','Brown rice, cooked',123,2.7,25.6,1.6,1],['Grains & Breads','Red rice (Chamorro), cooked',145,2.5,30,0.6,1.5],['Grains & Breads','Onigiri (plain, 1 ≈ 110g)',168,3,36,0.4,0.5],['Grains & Breads','Bread, white (1 slice ≈ 30g)',266,8.9,50.6,2.4,3.3],['Grains & Breads','Shokupan (1 thick slice ≈ 60g)',260,9,49,2.3,3.7],['Grains & Breads','Almond flour bread (typical)',280,10,10,6,23],['Grains & Breads','Low-carb tortilla (typical)',190,9,32,22,5],['Grains & Breads','Flour tortilla',306,8.2,50,3,7.7],['Grains & Breads','Titiyas (Chamorro flatbread)',310,7,52,2,8],['Grains & Breads','Udon, cooked',105,2.6,21.4,0.8,0.4],['Grains & Breads','Soba, cooked',99,5.1,21.4,1.5,0.1],['Grains & Breads','Ramen noodles, cooked',138,4.5,27,1,1],['Grains & Breads','Pasta, cooked',158,5.8,30.9,1.8,0.9],['Grains & Breads','Quinoa, cooked',120,4.4,21.3,2.8,1.9],['Grains & Breads','Oatmeal, cooked',71,2.5,12,1.7,1.5],['Grains & Breads','Sweet potato, cooked',90,2,20.7,3.3,0.2],['Grains & Breads','Satsumaimo, baked',151,1.2,35,2.9,0.2],['Grains & Breads','Potato, cooked',87,1.9,20.1,1.8,0.1],['Grains & Breads','Corn',96,3.4,21,2.4,1.5],
 /* Snacks & Sweets */
-['Snacks & Sweets','Dark chocolate 85%',592,9.5,46,10.9,52.4],['Snacks & Sweets','Dark chocolate 70%',546,7.9,49,11,38],['Snacks & Sweets','Milk chocolate',535,7.7,59.4,3.4,29.7],['Snacks & Sweets','Pork rinds',544,61.3,0,0,31.3],['Snacks & Sweets','Cheese crisps',500,35,5,0,38],['Snacks & Sweets','Potato chips',536,7,53,4.8,34.6],['Snacks & Sweets','Senbei',373,7,84,1,1],['Snacks & Sweets','Pocky',500,7,70,2,22],['Snacks & Sweets','Mochi',223,4.2,50,1,0.6],['Snacks & Sweets','Dorayaki',285,6,58,1.5,3],['Snacks & Sweets','Purin (custard pudding)',126,4.3,19,0,4],['Snacks & Sweets','Vanilla ice cream',207,3.5,23.6,0.7,11],['Snacks & Sweets','Konnyaku jelly (0kcal type)',8,0,3,3,0],['Snacks & Sweets','Protein bar (typical)',380,30,40,10,12],['Snacks & Sweets','Erythritol',0,0,100,100,0],['Snacks & Sweets','Honey',304,0.3,82.4,0.2,0],
+['Snacks & Sweets','Dark chocolate 85%',592,9.5,46,10.9,52.4],['Snacks & Sweets','Dark chocolate 70%',598,7.8,45.9,10.9,42.6],['Snacks & Sweets','Milk chocolate',535,7.7,59.4,3.4,29.7],['Snacks & Sweets','Pork rinds',544,61.3,0,0,31.3],['Snacks & Sweets','Cheese crisps',500,35,5,0,38],['Snacks & Sweets','Potato chips',536,7,53,4.8,34.6],['Snacks & Sweets','Senbei',373,7,84,1,1],['Snacks & Sweets','Pocky',500,7,70,2,22],['Snacks & Sweets','Mochi',223,4.2,50,1,0.6],['Snacks & Sweets','Dorayaki',285,6,58,1.5,3],['Snacks & Sweets','Purin (custard pudding)',126,4.3,19,0,4],['Snacks & Sweets','Vanilla ice cream',207,3.5,23.6,0.7,11],['Snacks & Sweets','Konnyaku jelly (0kcal type)',8,0,3,3,0],['Snacks & Sweets','Protein bar (typical)',380,30,40,10,12],['Snacks & Sweets','Erythritol',0,0,100,100,0],['Snacks & Sweets','Honey',304,0.3,82.4,0.2,0],
 /* Drinks & Condiments */
-['Drinks & Condiments','Green tea',1,0.2,0,0,0],['Drinks & Condiments','Black coffee',2,0.3,0,0,0],['Drinks & Condiments','Bulletproof coffee',41,0.1,0.2,0,4.4],['Drinks & Condiments','Cafe latte (whole milk)',42,3.3,4.7,0,1.9],['Drinks & Condiments','Bone broth',36,7,0.5,0,1],['Drinks & Condiments','Whey protein powder (typical)',400,80,8,1,6],['Drinks & Condiments','Beer',43,0.5,3.6,0,0],['Drinks & Condiments','Dry red wine',85,0.1,2.6,0,0],['Drinks & Condiments','Dry white wine',82,0.1,2.6,0,0],['Drinks & Condiments','Sake',103,0.4,4.9,0,0],['Drinks & Condiments','Shochu',146,0,0,0,0],['Drinks & Condiments','Whiskey highball',47,0,0,0,0],['Drinks & Condiments','Cola',42,0,10.6,0,0],['Drinks & Condiments','Zero-sugar cola',0,0,0,0,0],['Drinks & Condiments','Pocari Sweat',27,0,6.7,0,0],['Drinks & Condiments','Orange juice',45,0.7,10.4,0.2,0.2],['Drinks & Condiments','Ponzu',47,3.5,7.9,0,0],['Drinks & Condiments','Mirin',226,0.2,43,0,0],['Drinks & Condiments','Mentsuyu',44,2.2,8.7,0,0],['Drinks & Condiments','Rice vinegar',18,0.3,0.6,0,0],['Drinks & Condiments','Apple cider vinegar',21,0,0.9,0,0],['Drinks & Condiments','Ketchup',101,1,25,0.3,0.1],['Drinks & Condiments','Mustard',66,4.4,5.8,3.3,3.3],['Drinks & Condiments','Sriracha',93,1.9,19.2,2.2,0.9],['Drinks & Condiments','Tabasco',12,1.3,0.8,0.3,0.8],['Drinks & Condiments','Wasabi (tube)',265,2.3,40,6,10],['Drinks & Condiments','Salsa',36,1.5,7,1.9,0.2],['Drinks & Condiments','Pesto',450,4.7,6,1.6,45],['Drinks & Condiments','Ranch dressing',430,1.3,7,0,45],['Drinks & Condiments','Finadene sauce',60,5,6,0.5,0.5],['Drinks & Condiments','Sugar',387,0,100,0,0],
+['Drinks & Condiments','Green tea',1,0.2,0,0,0],['Drinks & Condiments','Black coffee',2,0.3,0,0,0],['Drinks & Condiments','Bulletproof coffee',41,0.1,0.2,0,4.4],['Drinks & Condiments','Cafe latte (whole milk)',42,3.3,4.7,0,1.9],['Drinks & Condiments','Bone broth',20,4.2,0.5,0,0.3],['Drinks & Condiments','Whey protein powder (typical)',400,80,8,1,6],['Drinks & Condiments','Beer',43,0.5,3.6,0,0],['Drinks & Condiments','Dry red wine',85,0.1,2.6,0,0],['Drinks & Condiments','Dry white wine',82,0.1,2.6,0,0],['Drinks & Condiments','Sake',134,0.5,5,0,0],['Drinks & Condiments','Shochu',146,0,0,0,0],['Drinks & Condiments','Whiskey highball',47,0,0,0,0],['Drinks & Condiments','Cola',42,0,10.6,0,0],['Drinks & Condiments','Zero-sugar cola',0,0,0,0,0],['Drinks & Condiments','Pocari Sweat',27,0,6.7,0,0],['Drinks & Condiments','Orange juice',45,0.7,10.4,0.2,0.2],['Drinks & Condiments','Ponzu',47,3.5,7.9,0,0],['Drinks & Condiments','Mirin',226,0.2,43,0,0],['Drinks & Condiments','Mentsuyu',44,2.2,8.7,0,0],['Drinks & Condiments','Rice vinegar',18,0.3,0.6,0,0],['Drinks & Condiments','Apple cider vinegar',21,0,0.9,0,0],['Drinks & Condiments','Ketchup',101,1,25,0.3,0.1],['Drinks & Condiments','Mustard',66,4.4,5.8,3.3,3.3],['Drinks & Condiments','Sriracha',93,1.9,19.2,2.2,0.9],['Drinks & Condiments','Tabasco',12,1.3,0.8,0.3,0.8],['Drinks & Condiments','Wasabi (tube)',265,2.3,40,6,10],['Drinks & Condiments','Salsa',29,1.5,6.6,1.9,0.2],['Drinks & Condiments','Pesto',450,4.7,6,1.6,45],['Drinks & Condiments','Ranch dressing',430,1.3,7,0,45],['Drinks & Condiments','Finadene sauce',60,5,6,0.5,0.5],['Drinks & Condiments','Sugar',387,0,100,0,0],
 /* Dishes */
 ['Dishes','Chicken kelaguen',150,16,4,1.5,8],['Dishes','Beef kelaguen',160,17,4,1.5,9],['Dishes','Shrimp kelaguen',95,14,4,1,2.5],['Dishes','Chicken adobo',215,20,4,0.5,13],['Dishes','Chicken karaage',290,16,13,0.5,19],['Dishes','Yakitori, thigh w/ tare',195,16,6,0.2,12],['Dishes','Tonkatsu',344,19,14,0.8,24],['Dishes','Gyoza (1 pc ≈ 24g)',218,8,26,1.5,9],['Dishes','Hambagu (hamburger steak)',223,13,8,0.5,15],['Dishes','Miso soup with tofu',30,2.4,3,0.8,1.2],['Dishes','Oden (average mix)',60,4.5,6,0.8,1.5],['Dishes','Nikujaga',105,4.5,12,1.2,4],['Dishes','Japanese curry with rice',160,4,25,1.5,5],['Dishes','Ramen, shoyu (whole bowl basis)',110,4.5,14,0.7,3.8],['Dishes','Sushi nigiri (avg, 1 pc ≈ 40g)',143,6,25,0.3,1.5],['Dishes','Sukiyaki (average mix)',130,9,8,0.8,7],['Dishes','Cauliflower fried rice with egg',80,4,6,2,4.5],['Dishes','Fathead pizza (typical)',300,15,7,2,24],['Dishes','Omelette with cheese',220,14,2,0,17],['Dishes','Caesar salad with chicken',120,10,4,1.5,7],['Dishes','Bunless cheeseburger',260,17,2,0.3,20],
+/* Baking & Pantry */
+['Baking & Pantry','All-purpose flour',364,10.3,76.3,2.7,1],['Baking & Pantry','Whole-wheat flour',340,13.2,72,10.7,2.5],['Baking & Pantry','Bread flour',361,12,72.5,2.4,1.7],['Baking & Pantry','Rice flour, white',366,6,80.1,2.4,1.4],['Baking & Pantry','Oat flour',404,14.7,65.7,6.5,9.1],['Baking & Pantry','Coconut flour',400,20,60,33.3,13.3],['Baking & Pantry','Cornstarch',381,0.3,91.3,0.9,0.1],['Baking & Pantry','Potato starch',357,0.1,83.1,0,0.3],['Baking & Pantry','Tapioca starch',358,0.2,88.7,0.9,0],['Baking & Pantry','Cornmeal, whole-grain',362,8.1,76.9,7.3,3.6],['Baking & Pantry','Semolina',360,12.7,72.8,3.9,1.1],['Baking & Pantry','Breadcrumbs / panko',395,13.3,72,4.5,5.3],['Baking & Pantry','Cocoa powder, unsweetened',228,19.6,57.9,37,13.7],['Baking & Pantry','Baking chocolate, unsweetened',642,14.3,28.4,16.6,52.3],['Baking & Pantry','Baking powder',53,0,27.7,0.2,0],['Baking & Pantry','Baking soda',0,0,0,0,0],['Baking & Pantry','Active dry yeast',325,40.4,41.2,26.9,7.6],['Baking & Pantry','Nutritional yeast',350,50,35,25,5],['Baking & Pantry','Vital wheat gluten',370,75.2,13.8,0.6,1.9],['Baking & Pantry','TVP (textured soy protein)',327,52,30,17.5,1.2],['Baking & Pantry','Gelatin, dry',335,85.6,0,0,0.1],['Baking & Pantry','Brown sugar',380,0.1,98.1,0,0],['Baking & Pantry','Powdered sugar',389,0,99.8,0,0],['Baking & Pantry','Coconut sugar',385,1,95,2,0],['Baking & Pantry','Molasses',290,0,74.7,0,0.1],['Baking & Pantry','Corn syrup, light',283,0,76.8,0,0.2],['Baking & Pantry','Vanilla extract',288,0.1,12.7,0,0.1],['Baking & Pantry','Salt',0,0,0,0,0],['Baking & Pantry','Chicken broth',31,4.4,0.8,0,1],['Baking & Pantry','Vegetable broth',5,0.2,0.9,0,0.1],['Baking & Pantry','Tomato paste',82,4.3,18.9,4.1,0.5],['Baking & Pantry','Tomato sauce (canned)',24,1.2,5.3,1.5,0.3],['Baking & Pantry','Diced tomatoes, canned',16,0.8,3.5,1.9,0.2],['Baking & Pantry','Evaporated milk',134,6.8,10,0,7.6],['Baking & Pantry','Buttermilk',40,3.3,4.8,0,0.9],['Baking & Pantry','Canola oil',884,0,0,0,100],['Baking & Pantry','Vegetable oil (soybean)',884,0,0,0,100],['Baking & Pantry','Margarine',717,0.2,0.7,0,80.7],['Baking & Pantry','Shortening',884,0,0,0,100],['Baking & Pantry','Fish sauce',35,5.1,3.6,0,0],['Baking & Pantry','Oyster sauce',51,1.4,10.9,0.3,0.2],['Baking & Pantry','Gochujang',190,4.5,44,2.5,1.3],['Baking & Pantry','Worcestershire sauce',78,0,19.5,0,0],['Baking & Pantry','Balsamic vinegar',88,0.5,17,0,0],['Baking & Pantry','Red wine vinegar',19,0,0.3,0,0],['Baking & Pantry','Coconut aminos',67,0.7,13.3,0,0],['Baking & Pantry','Garlic powder',331,16.6,72.7,9,0.7],['Baking & Pantry','Onion powder',341,10.4,79.1,15.2,1],['Baking & Pantry','Paprika',282,14.1,54,34.9,12.9],['Baking & Pantry','Chili powder',282,13.5,49.7,34.8,14.3],['Baking & Pantry','Curry powder',325,14.3,55.8,53.2,14],['Baking & Pantry','Black pepper',251,10.4,64,25.3,3.3],['Baking & Pantry','Cinnamon',247,4,80.6,53.1,1.2],['Baking & Pantry','Ground ginger',335,9,71.6,14.1,4.2],['Baking & Pantry','Cumin, ground',375,17.8,44.2,10.5,22.3],
 /* Grains & Breads (expansion) */
-['Grains & Breads','Jasmine rice, cooked',129,2.7,28.2,0.4,0.3],['Grains & Breads','Basmati rice, cooked',121,3.5,25.2,0.4,0.4],['Grains & Breads','Sushi rice, seasoned',144,2.4,32,0.4,0.2],['Grains & Breads','Glutinous rice (mochigome), cooked',97,2,21.1,1,0.2],['Grains & Breads','Rice porridge (okayu)',71,1.2,15.7,0.2,0.1],['Grains & Breads','Wild rice, cooked',101,4,21.3,1.8,0.3],['Grains & Breads','Couscous, cooked',112,3.8,23.2,1.4,0.2],['Grains & Breads','Pearl barley, cooked',123,2.3,28.2,3.8,0.4],['Grains & Breads','Buckwheat groats, cooked',92,3.4,19.9,2.7,0.6],['Grains & Breads','Bulgur, cooked',83,3.1,18.6,4.5,0.2],['Grains & Breads','Farro, cooked',149,6,30,3.5,1],['Grains & Breads','Millet, cooked',119,3.5,23.7,1.3,1],['Grains & Breads','Polenta, cooked',70,1.7,15,0.8,0.3],['Grains & Breads','Oats, rolled, dry',389,16.9,66.3,10.6,6.9],['Grains & Breads','Steel-cut oats, cooked',73,2.5,13,1.7,1.3],['Grains & Breads','Granola',471,10,64,7,20],['Grains & Breads','Muesli, unsweetened',352,9.7,66,8.4,5.3],['Grains & Breads','Corn flakes',357,7.5,84,3,0.4],['Grains & Breads','Whole-wheat bread (1 slice ≈ 32g)',247,13,41,6,3.4],['Grains & Breads','Sourdough bread',245,9.7,48,2.4,1.5],['Grains & Breads','Rye bread',259,8.5,48.3,5.8,3.3],['Grains & Breads','Baguette',272,9.7,55.8,2.3,1.3],['Grains & Breads','Pita bread (1 ≈ 60g)',275,9.1,55.7,2.2,1.2],['Grains & Breads','Naan',310,9,50,2.2,7.5],['Grains & Breads','Bagel (1 ≈ 100g)',257,10.2,50.5,2.1,1.5],['Grains & Breads','English muffin (1 ≈ 57g)',227,8.9,44.2,2.6,1.7],['Grains & Breads','Dinner roll (1 ≈ 35g)',310,9,52,2.2,6.5],['Grains & Breads','Croissant (1 ≈ 60g)',406,8.2,45.8,2.6,21],['Grains & Breads','Cornbread',330,6.7,51,2.4,10.9],['Grains & Breads','Corn tortilla (1 ≈ 25g)',218,5.7,44.6,6.3,2.9],['Grains & Breads','Whole-wheat tortilla',290,9,46,6,7],['Grains & Breads','Crackers, saltine',421,9.5,71,3,9],['Grains & Breads','Rice cakes, plain',387,8.2,81.5,4.2,2.8],
+['Grains & Breads','Jasmine rice, cooked',129,2.7,28.2,0.4,0.3],['Grains & Breads','Basmati rice, cooked',130,2.7,28.2,0.4,0.3],['Grains & Breads','Sushi rice, seasoned',144,2.4,32,0.4,0.2],['Grains & Breads','Glutinous rice (mochigome), cooked',97,2,21.1,1,0.2],['Grains & Breads','Rice porridge (okayu)',71,1.2,15.7,0.2,0.1],['Grains & Breads','Wild rice, cooked',101,4,21.3,1.8,0.3],['Grains & Breads','Couscous, cooked',112,3.8,23.2,1.4,0.2],['Grains & Breads','Pearl barley, cooked',123,2.3,28.2,3.8,0.4],['Grains & Breads','Buckwheat groats, cooked',92,3.4,19.9,2.7,0.6],['Grains & Breads','Bulgur, cooked',83,3.1,18.6,4.5,0.2],['Grains & Breads','Farro, cooked',149,6,30,3.5,1],['Grains & Breads','Millet, cooked',119,3.5,23.7,1.3,1],['Grains & Breads','Polenta, cooked',70,1.7,15,0.8,0.3],['Grains & Breads','Oats, rolled, dry',379,13.2,67.7,10.1,6.5],['Grains & Breads','Steel-cut oats, cooked',73,2.5,13,1.7,1.3],['Grains & Breads','Granola',471,10,64,7,20],['Grains & Breads','Muesli, unsweetened',352,9.7,66,8.4,5.3],['Grains & Breads','Corn flakes',357,7.5,84,3,0.4],['Grains & Breads','Whole-wheat bread (1 slice ≈ 32g)',247,13,41,6,3.4],['Grains & Breads','Sourdough bread',272,10.8,51.9,2.2,2.4],['Grains & Breads','Rye bread',259,8.5,48.3,5.8,3.3],['Grains & Breads','Baguette',272,9.7,55.8,2.3,1.3],['Grains & Breads','Pita bread (1 ≈ 60g)',275,9.1,55.7,2.2,1.2],['Grains & Breads','Naan',291,9.6,50.4,2.2,5.7],['Grains & Breads','Bagel (1 ≈ 100g)',257,10.2,50.5,2.1,1.5],['Grains & Breads','English muffin (1 ≈ 57g)',227,8.9,44.2,2.6,1.7],['Grains & Breads','Dinner roll (1 ≈ 35g)',310,9,52,2.2,6.5],['Grains & Breads','Croissant (1 ≈ 60g)',406,8.2,45.8,2.6,21],['Grains & Breads','Cornbread',266,6.7,43.5,2.4,7.1],['Grains & Breads','Corn tortilla (1 ≈ 25g)',218,5.7,44.6,6.3,2.9],['Grains & Breads','Whole-wheat tortilla',310,9.8,45.9,9.8,9.8],['Grains & Breads','Crackers, saltine',421,9.5,71,3,9],['Grains & Breads','Rice cakes, plain',387,8.2,81.5,4.2,2.8],
 /* Pasta & Noodles */
-['Pasta & Noodles','Whole-wheat pasta, cooked',124,5.3,26.5,3.9,0.5],['Pasta & Noodles','Egg noodles, cooked',138,4.5,25.2,1.2,2.1],['Pasta & Noodles','Rice noodles, cooked',108,0.9,24.9,0.9,0.2],['Pasta & Noodles','Pho noodles, cooked',109,0.9,25,0.9,0.2],['Pasta & Noodles','Glass noodles (harusame), cooked',80,0,19.5,0.2,0],['Pasta & Noodles','Somen, cooked',127,3.5,25.8,0.9,0.4],['Pasta & Noodles','Yakisoba noodles, steamed',149,4.8,28.9,1.7,1.5],['Pasta & Noodles','Couscous, pearl (ptitim), cooked',112,3.8,23,1.4,0.2],['Pasta & Noodles','Gnocchi, cooked',133,3.2,28.4,1.5,0.4],['Pasta & Noodles','Tortellini, cheese, cooked',270,11,42,2,6.5],
+['Pasta & Noodles','Whole-wheat pasta, cooked',149,6,30.1,3.9,1.7],['Pasta & Noodles','Egg noodles, cooked',138,4.5,25.2,1.2,2.1],['Pasta & Noodles','Rice noodles, cooked',108,0.9,24.9,0.9,0.2],['Pasta & Noodles','Pho noodles, cooked',109,0.9,25,0.9,0.2],['Pasta & Noodles','Glass noodles (harusame), cooked',80,0,19.5,0.2,0],['Pasta & Noodles','Somen, cooked',127,3.5,25.8,0.9,0.4],['Pasta & Noodles','Yakisoba noodles, steamed',149,4.8,28.9,1.7,1.5],['Pasta & Noodles','Couscous, pearl (ptitim), cooked',112,3.8,23,1.4,0.2],['Pasta & Noodles','Gnocchi, cooked',133,3.2,28.4,1.5,0.4],['Pasta & Noodles','Tortellini, cheese, cooked',270,11,42,2,6.5],
 /* Legumes & Beans */
-['Legumes & Beans','Black beans, cooked',132,8.9,23.7,8.7,0.5],['Legumes & Beans','Kidney beans, cooked',127,8.7,22.8,6.4,0.5],['Legumes & Beans','Pinto beans, cooked',143,9,26.2,9,0.7],['Legumes & Beans','Chickpeas, cooked',164,8.9,27.4,7.6,2.6],['Legumes & Beans','Hummus',166,7.9,14.3,6,9.6],['Legumes & Beans','Lentils, cooked',116,9,20.1,7.9,0.4],['Legumes & Beans','Red lentils, cooked',115,9,19.5,7,0.4],['Legumes & Beans','Split peas, cooked',118,8.3,21.1,8.3,0.4],['Legumes & Beans','White beans (cannellini), cooked',139,9.7,25.1,6.3,0.4],['Legumes & Beans','Navy beans, cooked',140,8.2,26.1,10.5,0.6],['Legumes & Beans','Black-eyed peas, cooked',116,7.7,20.8,6.5,0.5],['Legumes & Beans','Mung beans, cooked',105,7,19.2,7.6,0.4],['Legumes & Beans','Refried beans',91,5.5,15.3,5.1,1.2],['Legumes & Beans','Baked beans (canned)',94,4.8,17.9,4.1,0.4],['Legumes & Beans','Soybeans, cooked',173,16.6,9.9,6,9],['Legumes & Beans','Falafel (fried)',333,13.3,31.8,4.9,17.8],['Legumes & Beans','Anko (sweet red bean paste)',244,4.9,55.3,4.8,0.3],
+['Legumes & Beans','Black beans, cooked',132,8.9,23.7,8.7,0.5],['Legumes & Beans','Kidney beans, cooked',127,8.7,22.8,6.4,0.5],['Legumes & Beans','Pinto beans, cooked',143,9,26.2,9,0.7],['Legumes & Beans','Chickpeas, cooked',164,8.9,27.4,7.6,2.6],['Legumes & Beans','Hummus',166,7.9,14.3,6,9.6],['Legumes & Beans','Lentils, cooked',116,9,20.1,7.9,0.4],['Legumes & Beans','Red lentils, cooked',115,9,19.5,7,0.4],['Legumes & Beans','Split peas, cooked',118,8.3,21.1,8.3,0.4],['Legumes & Beans','White beans (cannellini), cooked',139,9.7,25.1,6.3,0.4],['Legumes & Beans','Navy beans, cooked',140,8.2,26.1,10.5,0.6],['Legumes & Beans','Black-eyed peas, cooked',116,7.7,20.8,6.5,0.5],['Legumes & Beans','Mung beans, cooked',105,7,19.2,7.6,0.4],['Legumes & Beans','Refried beans',90,5,13.6,3.7,2],['Legumes & Beans','Baked beans (canned)',94,4.8,21.1,4.1,0.4],['Legumes & Beans','Soybeans, cooked',172,18.2,8.4,6,9],['Legumes & Beans','Falafel (fried)',333,13.3,31.8,4.9,17.8],['Legumes & Beans','Anko (sweet red bean paste)',244,4.9,55.3,4.8,0.3],
 /* Potatoes & Starches */
 ['Potatoes & Starches','Baked potato with skin',93,2.5,21.1,2.2,0.1],['Potatoes & Starches','Mashed potatoes (with milk & butter)',113,1.9,16.9,1.3,4.2],['Potatoes & Starches','French fries',312,3.4,41.4,3.8,15],['Potatoes & Starches','Hash browns',265,3,35,3.2,12.5],['Potatoes & Starches','Taro, cooked',142,0.5,34.6,5.1,0.1],['Potatoes & Starches','Cassava, cooked',160,1.4,38.1,1.8,0.3],['Potatoes & Starches','Plantain, cooked',116,0.8,31.2,2.3,0.2],['Potatoes & Starches','Breadfruit (lemmai), cooked',103,1.1,27.1,4.9,0.2],['Potatoes & Starches','Yam, cooked',116,1.5,27.5,3.9,0.1],['Potatoes & Starches','Kabocha tempura',200,3,22,2,11],
 /* Fruits (expansion) */
@@ -908,7 +1060,7 @@ const FOODS=[
 /* Eggs & Dairy (expansion) */
 ['Eggs & Dairy','Milk, 2%',50,3.3,4.8,0,2],['Eggs & Dairy','Milk, skim',34,3.4,5,0,0.1],['Eggs & Dairy','Oat milk',47,1,7.6,0.8,1.5],['Eggs & Dairy','Kefir, plain low-fat',41,3.8,4.5,0,1],['Eggs & Dairy','Yogurt, fruit-flavored',99,3.9,18.6,0.2,1.1],['Eggs & Dairy','Chocolate milk',83,3.2,10.3,0.8,3.4],['Eggs & Dairy','Condensed milk, sweetened',321,7.9,54.4,0,8.7],['Eggs & Dairy','Paneer',296,18.3,3.6,0,23],
 /* Snacks & Sweets (expansion) */
-['Snacks & Sweets','Chocolate chip cookie',488,5.1,64.6,2.4,24],['Snacks & Sweets','Brownie',466,6.1,58.8,2.4,24.2],['Snacks & Sweets','Sponge cake',297,7.3,57.7,0.9,4.3],['Snacks & Sweets','Cheesecake',321,5.5,25.5,0.4,22.5],['Snacks & Sweets','Glazed donut (1 ≈ 60g)',421,5.1,49.5,1.5,22.8],['Snacks & Sweets','Apple pie',237,1.9,34,1.6,11],['Snacks & Sweets','Pancakes, plain',227,6.4,28.3,1,9.7],['Snacks & Sweets','Waffle',291,7.9,32.9,1.7,14.1],['Snacks & Sweets','Maple syrup',260,0,67,0,0.1],['Snacks & Sweets','Strawberry jam',250,0.4,60,1,0.1],['Snacks & Sweets','Popcorn, air-popped',387,12.9,77.8,14.5,4.5],['Snacks & Sweets','Popcorn, buttered',500,7.3,49.9,8.9,31],['Snacks & Sweets','Pretzels',380,10,80,2.9,3],['Snacks & Sweets','Tortilla chips',497,7.8,63.6,5.3,23.4],['Snacks & Sweets','Trail mix',462,13.8,44.9,5.9,29.4],['Snacks & Sweets','Gummy candy',333,6.9,77,0,0.2],['Snacks & Sweets','Granola bar',471,10.1,64.4,5.4,19.8],['Snacks & Sweets','Taiyaki',230,4.6,47,1.2,2.5],['Snacks & Sweets','Melonpan',350,7,60,1.5,9],['Snacks & Sweets','Castella',312,6.5,63,0.6,4.5],
+['Snacks & Sweets','Chocolate chip cookie',488,5.1,64.6,2.4,24],['Snacks & Sweets','Brownie',405,4.8,63.9,2.1,16.3],['Snacks & Sweets','Sponge cake',297,7.3,57.7,0.9,4.3],['Snacks & Sweets','Cheesecake',321,5.5,25.5,0.4,22.5],['Snacks & Sweets','Glazed donut (1 ≈ 60g)',421,5.1,49.5,1.5,22.8],['Snacks & Sweets','Apple pie',237,1.9,34,1.6,11],['Snacks & Sweets','Pancakes, plain',227,6.4,28.3,1,9.7],['Snacks & Sweets','Waffle',291,7.9,32.9,1.7,14.1],['Snacks & Sweets','Maple syrup',260,0,67,0,0.1],['Snacks & Sweets','Strawberry jam',250,0.4,60,1,0.1],['Snacks & Sweets','Popcorn, air-popped',387,12.9,77.8,14.5,4.5],['Snacks & Sweets','Popcorn, buttered',583,7.3,45.1,8.1,43.5],['Snacks & Sweets','Pretzels',380,10,80,2.9,3],['Snacks & Sweets','Tortilla chips',472,7.1,67.8,5.4,20.7],['Snacks & Sweets','Trail mix',462,13.8,44.9,5.9,29.4],['Snacks & Sweets','Gummy candy',333,6.9,77,0,0.2],['Snacks & Sweets','Granola bar',443,7.4,67.3,4.6,17.2],['Snacks & Sweets','Taiyaki',230,4.6,47,1.2,2.5],['Snacks & Sweets','Melonpan',350,7,60,1.5,9],['Snacks & Sweets','Castella',312,6.5,63,0.6,4.5],
 /* Drinks & Condiments (expansion) */
 ['Drinks & Condiments','Milk tea with boba (typical)',85,0.7,19,0.1,1.2],['Drinks & Condiments','Fruit smoothie (typical)',60,1,14,1.2,0.3],['Drinks & Condiments','Sweetened iced coffee',38,0.9,7.5,0,0.7],['Drinks & Condiments','Hot chocolate',77,3.2,13.4,0.8,1.4],['Drinks & Condiments','Lemonade',40,0.1,10.4,0,0],['Drinks & Condiments','Coconut water',19,0.7,3.7,1.1,0.2],['Drinks & Condiments','Kombucha',13,0,3.3,0,0],['Drinks & Condiments','Oat milk latte (typical)',36,0.8,5.5,0.5,1.2],['Drinks & Condiments','Calpis (diluted)',46,0.3,11.2,0,0],['Drinks & Condiments','Amazake',81,1.7,18.3,0.4,0.1],['Drinks & Condiments','BBQ sauce',172,0.8,40.8,0.9,0.6],['Drinks & Condiments','Teriyaki sauce',89,5.9,15.6,0,0],['Drinks & Condiments','Hoisin sauce',220,3.3,44.1,2.8,3.4],['Drinks & Condiments','Peanut sauce',300,9,20,2.5,21],['Drinks & Condiments','Tahini',595,17,21.2,9.3,53.8],['Drinks & Condiments','Guacamole',157,2,8.5,6,14.3],['Drinks & Condiments','Tzatziki',94,3.5,4.5,0.4,7],
 /* Dishes (expansion) */
@@ -982,13 +1134,42 @@ $('h-notes').oninput=e=>{day(todayKey()).notes=e.target.value;save();};
 
 /* ========== FOOD LOGGING ========== */
 let selFood=null;
-function allFoods(){ return D.customFoods.map(f=>({cat:'★ My foods',name:f.name,k:f.kcal,p:f.p,c:f.c,fb:f.fb,f:f.f,custom:true}))
+function allFoods(){ return D.customFoods.map(f=>({cat:'★ My foods',name:f.name,k:f.kcal,p:f.p,c:f.c,fb:f.fb,f:f.f,dens:f.dens,custom:true}))
   .concat(FOODS.map(a=>({cat:a[0],name:a[1],k:a[2],p:a[3],c:a[4],fb:a[5],f:a[6]}))); }
+/* g per ml, for volume→grams (volume↔volume is exact; volume↔grams only via density; water 1 ml = 1 g) */
+const DENSITY={'Olive oil':.91,'Avocado oil':.91,'Coconut oil':.92,'MCT oil':.95,'Sesame oil':.92,'Ghee':.91,'Lard':.9,'Beef tallow':.9,
+'Mayonnaise (Kewpie)':.91,'Avocado oil mayo':.91,'Heavy cream':1.01,'Sour cream':.98,'Half and half':1.02,'Whole milk':1.03,'Milk, 2%':1.03,'Milk, skim':1.04,'Chocolate milk':1.06,'Condensed milk, sweetened':1.29,
+'Almond milk, unsweetened':1,'Soy milk, unsweetened':1.03,'Oat milk':1.01,'Kefir, plain low-fat':1.03,'Greek yogurt, full-fat plain':1.04,'Greek yogurt, nonfat plain':1.04,'Yogurt, plain':1.03,
+'Coconut milk, canned':.97,'Coconut cream':1,'Coconut water':1.01,'Honey':1.42,'Maple syrup':1.37,'Strawberry jam':1.33,
+'Soy sauce':1.15,'Tamari':1.17,'Ponzu':1.1,'Mirin':1.2,'Mentsuyu':1.1,'Rice vinegar':1.01,'Apple cider vinegar':1.01,'Ketchup':1.14,'Mustard':1.05,'Sriracha':1.1,'Tabasco':1.05,'BBQ sauce':1.15,'Teriyaki sauce':1.2,'Hoisin sauce':1.25,'Peanut sauce':1.05,'Tahini':.95,'Pesto':.95,'Ranch dressing':.95,'Salsa':1,'Guacamole':.95,'Tzatziki':1,'Finadene sauce':1.08,'Miso paste':1.15,
+'Peanut butter, natural':1.08,'Almond butter':1.08,
+'Green tea':1,'Black coffee':1,'Bulletproof coffee':.99,'Cafe latte (whole milk)':1.02,'Sweetened iced coffee':1.03,'Oat milk latte (typical)':1.02,'Hot chocolate':1.03,'Bone broth':1,'Dashi broth':1,
+'Beer':1.01,'Dry red wine':.99,'Dry white wine':.99,'Sake':1,'Shochu':.96,'Whiskey highball':.98,'Cola':1.04,'Zero-sugar cola':1,'Pocari Sweat':1.03,'Orange juice':1.05,'Lemonade':1.04,'Kombucha':1.01,'Milk tea with boba (typical)':1.06,'Fruit smoothie (typical)':1.05,'Calpis (diluted)':1.04,'Amazake':1.05,'Lemon juice':1.03,'Lime juice':1.03,
+'Oats, rolled, dry':.34,'Almond flour':.41,'Chia seeds':.81,'Flaxseed, ground':.47,'Sesame seeds':.61,'Shredded coconut, unsweetened':.32,'Sugar':.85,'Erythritol':.8,
+'White rice, cooked':.67,'Brown rice, cooked':.68,'Jasmine rice, cooked':.67,'Basmati rice, cooked':.67,'Sushi rice, seasoned':.78,'Quinoa, cooked':.78,'Oatmeal, cooked':1,'Steel-cut oats, cooked':1,
+'Pasta, cooked':.59,'Whole-wheat pasta, cooked':.59,'Black beans, cooked':.73,'Kidney beans, cooked':.75,'Pinto beans, cooked':.72,'Chickpeas, cooked':.69,'Lentils, cooked':.84,'Hummus':1.03,'Refried beans':1.02,
+'Whey protein powder (typical)':.47,'All-purpose flour':.51,'Whole-wheat flour':.51,'Bread flour':.51,'Rice flour, white':.53,'Oat flour':.38,'Coconut flour':.47,'Cornstarch':.54,'Potato starch':.63,'Tapioca starch':.51,'Cornmeal, whole-grain':.52,'Cocoa powder, unsweetened':.41,'Brown sugar':.81,'Powdered sugar':.51,'Coconut sugar':.7,'Molasses':1.4,'Corn syrup, light':1.38,'Vanilla extract':.88,'Chicken broth':1,'Vegetable broth':1,'Tomato paste':1.1,'Tomato sauce (canned)':1.03,'Diced tomatoes, canned':1.02,'Evaporated milk':1.07,'Buttermilk':1.03,'Canola oil':.92,'Vegetable oil (soybean)':.92,'Fish sauce':1.2,'Oyster sauce':1.25,'Gochujang':1.15,'Worcestershire sauce':1.07,'Balsamic vinegar':1.06,'Red wine vinegar':1.01,'Coconut aminos':1.13,'Nutritional yeast':.34,'Garlic powder':.49,'Onion powder':.41,'Paprika':.46,'Chili powder':.54,'Cinnamon':.53};
+const VOLML={ml:1,tsp:4.93,tbsp:14.79,cup:236.6};
+function foodDensity(f){ if(!f) return null; return f.dens||DENSITY[f.name]||null; }
+function toGrams(val,unit,food){
+  if(unit==='g') return val;
+  const dn=foodDensity(food); if(!dn) return null;
+  return val*VOLML[unit]*dn;
+}
+function renderGEquiv(){
+  const eq=$('gequiv'); if(!eq) return;
+  const u=$('funit').value, v=+$('fgrams').value||0;
+  if(u==='g'||!selFood){ eq.textContent=''; return; }
+  const g=toGrams(v,u,selFood);
+  eq.textContent=(g!=null)?('= '+Math.round(g)+' g'):'no density — grams only';
+}
+$('funit').onchange=renderGEquiv;
+$('fgrams').oninput=renderGEquiv;
 $('fsearch').oninput=e=>{
   const q=e.target.value.trim().toLowerCase(), box=$('fresults');
   if(q.length<2){ box.classList.remove('show'); return; }
   const hits=allFoods().filter(f=>f.name.toLowerCase().includes(q)).slice(0,12);
-  box.innerHTML=hits.length?hits.map((f,i)=>'<div class="res" data-i="'+i+'"><span'+(f.custom?' class="custom"':'')+'>'+esc(f.name)+'</span><span class="rm">'+f.k+'kcal · '+Math.max(0,f.c-f.fb).toFixed(1)+'g net /100g</span></div>').join('')
+  box.innerHTML=hits.length?hits.map((f,i)=>'<div class="res" data-i="'+i+'"><span'+(f.custom?' class="custom"':'')+'>'+esc(f.name)+'</span><span class="rm">'+f.k+'kcal · '+(D.carbMode==='total'?(+f.c).toFixed(1):Math.max(0,f.c-f.fb).toFixed(1))+'g '+(D.carbMode==='total'?'carb':'net')+' /100g'+(pDense(f)?' 💪':'')+'</span></div>').join('')
     :'<div class="res sub">No match — create it as a custom food below 👇</div>';
   box.classList.add('show');
   box.querySelectorAll('.res[data-i]').forEach(el=>{
@@ -998,17 +1179,27 @@ $('fsearch').oninput=e=>{
 };
 $('fadd').onclick=()=>{
   if(!selFood) return;
-  const g=Math.max(1,+$('fgrams').value||100), r=g/100, k=todayKey();
+  const unit=$('funit').value, raw=+$('fgrams').value||0;
+  let g;
+  if(unit==='g') g=Math.max(1,raw||100);
+  else {
+    const gg=toGrams(raw,unit,selFood);
+    if(gg==null) return toast('No density known for this food — log it in grams');
+    g=Math.max(1,Math.round(gg));
+  }
+  const r=g/100, k=todayKey();
   if(!D.meals[k]) D.meals[k]=[];
   D.meals[k].push({name:selFood.name,g:g,kcal:+(selFood.k*r).toFixed(0),p:+(selFood.p*r).toFixed(1),c:+(selFood.c*r).toFixed(1),fb:+(selFood.fb*r).toFixed(1),f:+(selFood.f*r).toFixed(1)});
   save(); renderMeals(); renderMacrosToday(); renderWeave();
   toast('Logged '+g+' g — to the table 🍲');
-  selFood=null; $('fsearch').value=''; $('amtrow').style.display='none'; $('fgrams').value=100;
+  selFood=null; $('fsearch').value=''; $('amtrow').style.display='none'; $('fgrams').value=100; $('funit').value='g'; if($('gequiv'))$('gequiv').textContent='';
 };
 $('cf-add').onclick=()=>{
   const n=$('cf-name').value.trim(); if(!n) return toast('Give it a name first');
-  D.customFoods.unshift({name:n+' ★',kcal:+$('cf-kcal').value||0,p:+$('cf-p').value||0,c:+$('cf-c').value||0,fb:+$('cf-fb').value||0,f:+$('cf-f').value||0});
-  ['cf-name','cf-kcal','cf-p','cf-c','cf-fb','cf-f'].forEach(i=>$(i).value='');
+  const cf={name:n+' ★',kcal:+$('cf-kcal').value||0,p:+$('cf-p').value||0,c:+$('cf-c').value||0,fb:+$('cf-fb').value||0,f:+$('cf-f').value||0};
+  const dn=+$('cf-dens').value; if(dn>0) cf.dens=dn;
+  D.customFoods.unshift(cf);
+  ['cf-name','cf-kcal','cf-p','cf-c','cf-fb','cf-f','cf-dens'].forEach(i=>$(i).value='');
   save(); renderLibrary(); toast('Saved to your library ★');
 };
 function renderMeals(){
@@ -1030,7 +1221,15 @@ function renderMeals(){
       e.kcal=+(e.kcal*per).toFixed(0); e.p=+(e.p*per).toFixed(1); e.c=+(e.c*per).toFixed(1); e.fb=+(e.fb*per).toFixed(1); e.f=+(e.f*per).toFixed(1); e.g=ng;
       save(); renderMeals(); renderMacrosToday(); renderWeave(); toast('Rescaled to '+ng+' g');
     };
-    r.querySelector('.danger').onclick=()=>{ D.meals[k].splice(i,1); save(); renderMeals(); renderMacrosToday(); renderWeave(); };
+    r.querySelector('.danger').onclick=()=>{
+      const removed=D.meals[k][i];
+      D.meals[k].splice(i,1); save(); renderMeals(); renderMacrosToday(); renderWeave();
+      undoToast('Removed '+removed.name,()=>{
+        const kk=todayKey(); if(!D.meals[kk]) D.meals[kk]=[];
+        D.meals[kk].splice(Math.min(i,D.meals[kk].length),0,removed);
+        save(); renderMeals(); renderMacrosToday(); renderWeave(); toast('Rewoven 🧵');
+      });
+    };
     w.appendChild(r);
   });
 }
@@ -1080,7 +1279,7 @@ function renderLibrary(){
   $('libcat').innerHTML=cats.map(c=>'<option'+(c===cur?' selected':'')+'>'+c+'</option>').join('');
   const sel=$('libcat').value||'All';
   const list=foods.filter(f=>sel==='All'||f.cat===sel);
-  $('liblist').innerHTML=list.map(f=>'<div class="res"><span'+(f.custom?' class="custom"':'')+'>'+esc(f.name)+'</span><span class="rm">'+f.k+' kcal · P'+f.p+' · '+carbAbbr()+(D.carbMode==='total'?(+f.c).toFixed(1):Math.max(0,f.c-f.fb).toFixed(1))+' · F'+f.f+(f.custom?' <button class="mini danger cfdel" data-cf="'+esc(f.name)+'">✕</button>':'')+'</span></div>').join('');
+  $('liblist').innerHTML=list.map(f=>'<div class="res"><span'+(f.custom?' class="custom"':'')+'>'+esc(f.name)+'</span><span class="rm">'+f.k+' kcal · P'+f.p+' · '+carbAbbr()+(D.carbMode==='total'?(+f.c).toFixed(1):Math.max(0,f.c-f.fb).toFixed(1))+' · F'+f.f+(pDense(f)?' <span title="protein-dense: 40%+ of calories from protein">💪</span>':'')+(f.custom?' <button class="mini danger cfdel" data-cf="'+esc(f.name)+'">✕</button>':'')+'</span></div>').join('');
   const rows=$('liblist').querySelectorAll('.res');
   rows.forEach((el,i)=>{ el.onclick=(ev)=>{ if(ev.target.classList.contains('cfdel')) return; selFood=list[i]; $('selname').textContent=selFood.name; $('amtrow').style.display='flex'; $('fsearch').value=selFood.name; window.scrollTo({top:0,behavior:'smooth'}); toast('Set grams up top & tap Add'); }; });
   $('liblist').querySelectorAll('.cfdel').forEach(b=>b.onclick=(ev)=>{ ev.stopPropagation(); if(confirm('Delete "'+b.dataset.cf+'" from your foods?')){ D.customFoods=D.customFoods.filter(x=>x.name!==b.dataset.cf); save(); renderLibrary(); } });
@@ -1390,6 +1589,7 @@ function renderCycle(){
     }
   }
   $('cyc-stats').innerHTML=html;
+  renderPhase();
   const recent=[...new Set(D.cycleDays)].sort().slice(-8).reverse();
   w.innerHTML='';
   recent.forEach(dstr=>{
@@ -1398,6 +1598,56 @@ function renderCycle(){
     r.querySelector('button').onclick=()=>{ D.cycleDays=D.cycleDays.filter(x=>x!==dstr); save(); renderCycle(); };
     w.appendChild(r);
   });
+}
+function cycleVariability(){
+  const st=cycleStarts(); const lens=[];
+  for(let i=1;i<st.length;i++) lens.push((new Date(st[i]+'T00:00')-new Date(st[i-1]+'T00:00'))/86400000);
+  if(lens.length<2) return null;
+  const avg=lens.reduce((a,b)=>a+b,0)/lens.length;
+  const sd=Math.sqrt(lens.map(x=>(x-avg)*(x-avg)).reduce((a,b)=>a+b,0)/lens.length);
+  return {avg:avg,sd:sd,n:lens.length};
+}
+const PHASES={
+  menstrual:['🌑','Menstrual phase','Energy is often at its monthly low — that\u2019s physiology, not weakness. Warmth, iron-rich food, and extra rest are productive here, not lazy.'],
+  follicular:['🌱','Follicular phase','Estrogen is climbing, and energy, mood, and strength often climb with it. A good stretch for harder training and new beginnings.'],
+  ovulatory:['☀️','Around ovulation','Energy and warmth toward the world often peak here. A one-sided lower twinge for a day is common and normal.'],
+  luteal:['🌙','Luteal phase','Progesterone is up: appetite genuinely rises (often 100–300 kcal of real need), sleep runs lighter, feelings sit closer to the skin, and the body holds extra water. Cravings this week are chemistry, not a character flaw.']
+};
+function currentPhase(){
+  const st=cycleStarts(); if(!st.length) return null;
+  const day=Math.floor((new Date().setHours(0,0,0,0)-new Date(st[st.length-1]+'T00:00'))/86400000);
+  const pr=cyclePrediction(); if(!pr) return {day:day,phase:null};
+  const v=cycleVariability();
+  const irregular=!v||v.sd>4.5||pr.spread>=6;
+  const L=pr.avg, ov=L-14;
+  let phase;
+  if(day>L+pr.spread) phase='overdue';
+  else if(day<=4) phase='menstrual';
+  else if(day>=ov-1&&day<=ov+1) phase='ovulatory';
+  else if(day>ov+1) phase='luteal';
+  else phase='follicular';
+  return {day:day,phase:phase,irregular:irregular,L:L,v:v};
+}
+function inLutealWaterWindow(){
+  const pr=cyclePrediction(); if(!pr) return false;
+  const dd=Math.round((pr.date-new Date().setHours(0,0,0,0))/86400000);
+  return dd>=0&&dd<=5;
+}
+function renderPhase(){
+  const b=$('phasebox'); if(!b) return;
+  const c=currentPhase();
+  if(!c||c.phase===null){ b.style.display='none'; return; }
+  b.style.display='block';
+  if(c.irregular){
+    b.innerHTML='🧭 Your cycle lengths vary enough (±'+Math.round(c.v?c.v.sd:5)+' d over '+(c.v?c.v.n:'few')+' cycles) that phase estimates would be guessing — so here\u2019s the plain truth instead: <b>day '+(c.day+1)+'</b> since your last period. The pattern itself is the valuable data.<span class="pcosnote"> With PCOS this variability is common — tracking it is the win.</span>';
+    return;
+  }
+  if(c.phase==='overdue'){
+    b.innerHTML='🧭 <b>Day '+(c.day+1)+'</b> of an average '+c.L+'-day cycle — running long. Bodies aren\u2019t clocks; if this stretches on, it\u2019s simply useful data to mention to a doctor.';
+    return;
+  }
+  const [ico,name,txt]=PHASES[c.phase];
+  b.innerHTML=ico+' <b>'+name+'</b> · day '+(c.day+1)+' of ~'+c.L+'. '+txt+' <span class="sub">An estimate from your own pattern, not a rule.</span>';
 }
 function addCycleDay(dstr){
   if(!dstr) return;
@@ -1409,7 +1659,7 @@ $('cyc-today').onclick=()=>addCycleDay(todayKey());
 $('cyc-add').onclick=()=>addCycleDay($('cyc-date').value);
 
 /* ========== TREND CHARTS (pure SVG) ========== */
-function lineChart(vals,labels,color,title,unit){
+function lineChart(vals,labels,color,title,unit,trend){
   if(vals.length<2) return '';
   const W=320,H=110,P=28;
   const mn=Math.min(...vals), mx=Math.max(...vals), span=(mx-mn)||1;
@@ -1422,18 +1672,60 @@ function lineChart(vals,labels,color,title,unit){
     '<line x1="'+P+'" y1="'+Y(mn)+'" x2="'+(W-10)+'" y2="'+Y(mn)+'" stroke="#E7E2F2" stroke-dasharray="3,3"/>'+
     '<text x="2" y="'+(Y(mx)+3)+'" font-size="9" fill="#9A94B0">'+mx+'</text>'+
     '<text x="2" y="'+(Y(mn)+3)+'" font-size="9" fill="#9A94B0">'+mn+'</text>'+
+    (trend&&trend.length===vals.length?'<polyline points="'+trend.map((v,i)=>X(i).toFixed(1)+','+Y(Math.min(mx,Math.max(mn,v))).toFixed(1)).join(' ')+'" fill="none" stroke="#C9A227" stroke-width="2" stroke-dasharray="5,4" stroke-linejoin="round"/>':'')+
     '<polyline points="'+pts+'" fill="none" stroke="'+color+'" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>'+
     '<circle cx="'+X(li)+'" cy="'+Y(vals[li])+'" r="3.5" fill="'+color+'"/>'+
     '<text x="'+Math.min(X(li),W-36)+'" y="'+Math.max(10,Y(vals[li])-7)+'" font-size="10" font-weight="700" fill="'+color+'">'+vals[li]+unit+'</text>'+
     (labels?'<text x="'+P+'" y="'+(H-4)+'" font-size="9" fill="#9A94B0">'+labels[0]+'</text><text x="'+(W-10)+'" y="'+(H-4)+'" font-size="9" fill="#9A94B0" text-anchor="end">'+labels[1]+'</text>':'')+
     '</svg></div>';
 }
+function weightTrend(wv){
+  /* time-based rolling average: entries within the 7 days ending at each point */
+  return wv.map((m,i)=>{
+    const from=m.date-7*86400000;
+    const win=wv.filter(x=>x.date<=m.date&&x.date>=from);
+    return fx1(w2d(win.reduce((a,x)=>a+x.w,0)/win.length));
+  });
+}
 function renderBodyCharts(){
   const ms=[...D.measures].reverse();
   const wv=ms.filter(m=>m.w!==undefined), wa=ms.filter(m=>m.waist!==undefined);
   const fmt=m=>new Date(m.date).toLocaleDateString(undefined,{month:'numeric',day:'numeric'});
-  $('chart-weight').innerHTML=wv.length>=2?lineChart(wv.map(m=>fx1(w2d(m.w))),[fmt(wv[0]),fmt(wv[wv.length-1])],'#1E3464','Weight',' '+wU()):'';
+  const tr=wv.length>=4?weightTrend(wv):null;
+  $('chart-weight').innerHTML=wv.length>=2?lineChart(wv.map(m=>fx1(w2d(m.w))),[fmt(wv[0]),fmt(wv[wv.length-1])],'#1E3464','Weight'+(tr?' · gold = 7-day average':''),' '+wU(),tr):'';
   $('chart-waist').innerHTML=wa.length>=2?lineChart(wa.map(m=>fx1(l2d(m.waist))),[fmt(wa[0]),fmt(wa[wa.length-1])],'#C25E7E','Waist',' '+lU()):'';
+  renderScaleNote(wv); renderWHtR();
+}
+function renderScaleNote(wv){
+  const b=$('scalenote'); if(!b) return;
+  wv=wv||[...D.measures].reverse().filter(m=>m.w!==undefined);
+  if(wv.length<3){ b.style.display='none'; return; }
+  const latest=wv[wv.length-1];
+  if(Date.now()-latest.date>3*86400000){ b.style.display='none'; return; }
+  const prior=wv.slice(0,-1).filter(m=>m.date>=latest.date-8*86400000);
+  if(prior.length<2){ b.style.display='none'; return; }
+  const avg=prior.reduce((a,m)=>a+m.w,0)/prior.length;
+  const diff=latest.w-avg;
+  const luteal=threadOn('cycle')&&inLutealWaterWindow();
+  if(diff>=0.7){
+    b.style.display='block';
+    b.innerHTML='🌊 Today\u2019s weigh-in sits <b>+'+fx1(w2d(diff))+' '+wU()+'</b> above your recent average. '+
+      (luteal?'You\u2019re also in the days before your predicted period, when holding 1–2 kg of water is completely normal. ':'')+
+      'This is almost certainly water, not fat — see \u201cwhy the scale jumps\u201d below. The gold line is the one to trust.';
+  } else if(luteal){
+    b.style.display='block';
+    b.innerHTML='🌙 Heads up: you\u2019re in the days before your predicted period — the scale often drifts up 1–2 kg here from water alone. Whatever it says this week, it isn\u2019t fat.';
+  } else b.style.display='none';
+}
+function renderWHtR(){
+  const b=$('whtrbox'); if(!b) return;
+  if(!threadOn('whtr')){ b.style.display='none'; return; }
+  const h=D.calc&&D.calc.h;
+  const wa=D.measures.find(m=>m.waist!==undefined);
+  b.style.display='block';
+  if(!h||!wa){ b.innerHTML='📐 Waist-to-height needs a height (set once in the macro calculator) and a waist check-in — then it appears here.'; return; }
+  const r=wa.waist/h;
+  b.innerHTML='📐 Waist-to-height ratio: <b>'+r.toFixed(2)+'</b>. Research often treats ~0.5 as a gentle midpoint for metabolic health, but this is one slow-moving lens among many — worth a glance monthly, not daily. It says nothing about strength, fitness, or worth.';
 }
 function renderFieldCharts(){
   const wkStudy=[], wkFast=[];
@@ -1526,7 +1818,7 @@ function renderCalendar(){
     const meas=D.measures.find(x=>keyOf(new Date(x.date))===selDay);
     dd.innerHTML='<b>'+new Date(selDay+'T00:00').toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'})+' · '+HVDAYS[new Date(selDay+'T00:00').getDay()][1]+'</b><br>'+
       (SF?'✨ <b>'+SF.n+'</b>'+(SF.d?' — '+SF.d:'')+'<br>':'')+
-      ((D.profile&&!D.profile.skipped&&D.profile.moon===(+sdp[1]-1)&&D.profile.day===(+sdp[2]))?'🎂 <b>Your birthday!</b> ✨<br>':'')+
+      ((D.profile&&!D.profile.skipped&&D.profile.moon===(+sdp[1]-1)&&D.profile.day===(+sdp[2]))?'🎂 <b>Your birthday!</b> <button class="mini" id="bdayreplay">open the card ✨</button><br>':'')+
       (m.kcal>0?'🍲 '+m.kcal.toFixed(0)+' kcal · P '+m.p.toFixed(0)+'g · '+carbAbbr()+' '+carbOf(m).toFixed(1)+'g · F '+m.f.toFixed(0)+'g'+(isOnTarget(selDay)?' <b style="color:var(--leaf)">macros ✓</b>':'')+'<br>':'')+
       (fh>0.5?'⏳ fasted '+fh.toFixed(1)+' h<br>':'')+
       (d&&d.study?'📖 '+d.study+' min study<br>':'')+(d&&d.exercise?'💪 '+d.exercise+' min exercise<br>':'')+
@@ -1534,16 +1826,26 @@ function renderCalendar(){
       (meas?'📏 '+(meas.w?fx1(w2d(meas.w))+' '+wU():'measured')+'<br>':'')+
       (d&&d.steps?'👣 '+d.steps+' steps<br>':'')+
       (d&&d.mood?moodGlyph(d.mood)+' mood<br>':'')+
+      ((D.sleep||{})[selDay]?'🌙 slept '+durStr(sleepDur(D.sleep[selDay]))+' '+QMOONS[((D.sleep[selDay].q||3)-1)]+'<br>':'')+
       (d&&d.water?'💧 '+waterDisp(d.water)+' water<br>':'')+
       ((D.workouts[selDay]||[]).length?'💪 ≈ '+D.workouts[selDay].reduce((a,e)=>a+e.kcal,0)+' kcal burned<br>':'')+
       (cycSet.has(selDay)?'🩸 period day<br>':'')+
-      (d&&d.symp&&SYMPTOMS.some(([id])=>d.symp[id])?'🫧 '+SYMPTOMS.filter(([id])=>d.symp[id]).map(x=>x[1]).join(' · ')+'<br>':'')+
+      (d&&d.symp&&SYMPTOMS.some(([id])=>d.symp[id])?SYMPTOMS.filter(([id])=>d.symp[id]).map(x=>x[1]).join(' · ')+'<br>':'')+
       (typeof dayPhotoThumbs==='function'?dayPhotoThumbs(selDay):'')+
       (d&&d.notes?'✍🏽 '+esc(d.notes):'')+
-      (selDay<=todayKey()?'<div style="margin-top:9px"><button class="mini" id="editday">✎ edit this day</button></div><div id="dayeditor"></div>':'');
+      (selDay<=todayKey()?'<div style="margin-top:9px"><button class="mini" id="editday">✎ edit this day</button> <button class="mini" id="weavenight">🌙 '+((D.sleep||{})[selDay]?'reweave':'weave')+' this night</button></div><div id="dayeditor"></div>':'');
     dd.classList.add('show');
     const eb=$('editday');
     if(eb) eb.onclick=()=>{ editingDay=selDay; ED=null; eb.style.display='none'; renderDayEditor(selDay); };
+    const br=$('bdayreplay');
+    if(br) br.onclick=(ev)=>{ ev.stopPropagation(); showBdayCard(); };
+    const wn=$('weavenight');
+    if(wn) wn.onclick=()=>{
+      if(!threadOn('sleep')) return toast('The Dream Weave thread is tucked away — reweave it from the Loom tab first');
+      const tb=document.querySelector('button[data-tab="today"]'); if(tb) tb.click();
+      dwStartEdit(selDay);
+      const dc=$('dreamcard'); if(dc&&dc.scrollIntoView) dc.scrollIntoView({behavior:'smooth'});
+    };
     if(editingDay===selDay&&eb){ eb.style.display='none'; renderDayEditor(selDay); }
   } else dd.classList.remove('show');
 }
@@ -1673,7 +1975,9 @@ $('m-add').onclick=()=>{
   if(!any) return toast('Enter at least one number');
   D.measures.unshift(e); D.measures=D.measures.slice(0,120);
   MFIELDS.forEach(([f])=>$('m-'+f).value='');
-  save(); renderMeasures(); renderBodyCharts(); toast('Check-in logged. The tape tells the truth kindly. 💙');
+  save(); renderMeasures(); renderBodyCharts();
+  if(e.w!==undefined&&threadOn('cycle')&&inLutealWaterWindow()) toast('Logged 💙 Pre-period days — extra water on the scale is normal and not fat.');
+  else toast('Check-in logged. The tape tells the truth kindly. 💙');
 };
 function renderMeasures(){
   const t=$('mtable');
@@ -1724,13 +2028,13 @@ $('newgoal').onkeydown=e=>{if(e.key==='Enter')$('addgoal').click();};
     D.targets=Object.assign({kcal:1500,p:100,nc:25,f:110},loaded.targets||{});
     D.funds=D.funds||[]; D.sound=D.sound!==false; D.fastView=D.fastView||'up';
     D.units=D.units||'metric'; D.waterGoal=D.waterGoal||2000; D.auroraMode=D.auroraMode||'auto'; delete D.aurora;
-    D.threads=D.threads||{}; D.carbMode=D.carbMode||'net'; D.macroRule=D.macroRule||'keto';
+    D.threads=D.threads||{}; D.carbMode=D.carbMode||'net'; D.macroRule=D.macroRule||'keto'; D.recipes=D.recipes||[]; D.sleep=D.sleep||{};
   }
   renderProverb(); renderToday(); renderMeals(); renderTargets(); fillCalc(); renderLibrary(); renderTasks(); renderCountdowns(); renderExOptions(); renderWorkouts(); renderCombos(); renderCycle(); renderBodyCharts(); renderFieldCharts(); renderJournal(); renderLytes();
   renderProtocols(); tickFast(); renderStages(); renderFastLog();
-  renderGemReview(); renderStoneChip(); if(!D.profile) openSetup(); checkBirthday();
+  renderGemReview(); renderStoneChip(); if(!D.profile) openAbout(true); checkBirthday();
   renderUnitUI(); renderCalendar(); renderMeasures(); renderGoals(); renderFunds(); renderBackupNag(); applyAurora(); seedStars();
-  renderThreads(); applyThreads();
+  renderThreads(); applyThreads(); renderRecipes(); renderDreamWeave();
   renderFreqFoods(); renderSymptoms(); renderInsights();
 })();
 
@@ -1846,18 +2150,73 @@ function renderSetup(){
   $('su-stones').querySelectorAll('.stonepick').forEach(el=>el.onclick=()=>{ suStone=+el.dataset.i; renderSetup(); sparkleBurst(el); });
 }
 $('su-moon').onchange=e=>{ suMoon=+e.target.value; suStone=0; renderSetup(); };
+let aboutChain=false;
+function openAbout(chain){
+  aboutChain=!!chain;
+  if($('about-go')) $('about-go').textContent=chain?'Continue — receive your Lífsteinn 💎':'Close';
+  $('aboutov').classList.add('show');
+}
+if($('about-go')) $('about-go').onclick=()=>{
+  $('aboutov').classList.remove('show');
+  if(aboutChain){ aboutChain=false; openSetup(); }
+};
+if($('aboutbtn')) $('aboutbtn').onclick=()=>openAbout(false);
+if($('su-about')) $('su-about').onclick=()=>openAbout(false);
+function suShow(n){ for(let i=1;i<=5;i++){ const el=$('su-step'+i); if(el) el.style.display=(i===n?'':'none'); } }
 function openSetup(){
   const pf=D.profile||{};
   suMoon=(pf.moon!=null?pf.moon:new Date().getMonth()); suStone=pf.stoneIdx||0;
   if(pf.day)$('su-day').value=pf.day;
-  renderSetup(); $('setupov').classList.add('show');
+  $('su-chosen').innerHTML='';
+  /* the counting step: rule presets */
+  $('su-diet').innerHTML='<option value="">Decide later — gentle defaults</option>'+Object.keys(DIETS).map(d=>'<option'+(D.calc&&D.calc.diet===d?' selected':'')+'>'+d+'</option>').join('');
+  renderSuThreads();
+  renderSetup(); suShow(1); $('setupov').classList.add('show');
 }
+function renderSuThreads(){
+  const w=$('su-threads'); if(!w) return;
+  w.innerHTML='';
+  THREADS.forEach(([id,label])=>{
+    const b=document.createElement('button'); b.className='chip'+(threadOn(id)?' on':''); b.textContent=label;
+    b.onclick=()=>{ D.threads=D.threads||{}; D.threads[id]=!threadOn(id); save(); renderSuThreads(); };
+    w.appendChild(b);
+  });
+}
+$('su-begin').onclick=()=>suShow(2);
+$('su-back2').onclick=()=>suShow(1);
+$('su-next2').onclick=()=>{ if(!(+$('su-day').value>=1)) return toast('Which day of the Moon were you born?'); suShow(3); };
+$('su-back3').onclick=()=>suShow(2);
+$('su-choose').onclick=()=>{
+  suStone=Math.floor(Math.random()*BIRTHSTONES[suMoon].length);
+  renderSetup();
+  const tile=$('su-stones').querySelectorAll('.stonepick')[suStone];
+  if(tile&&typeof sparkleBurst==='function') sparkleBurst(tile);
+  $('su-chosen').innerHTML='The stone has chosen: <b>'+BIRTHSTONES[suMoon][suStone][0]+'</b> ✨';
+};
 $('su-later').onclick=()=>{ if(!D.profile) D.profile={skipped:true}; save(); $('setupov').classList.remove('show'); renderStoneChip(); };
 $('su-save').onclick=()=>{
   const dd=Math.min(31,Math.max(1,+$('su-day').value||1));
   D.profile={moon:suMoon,day:dd,stoneIdx:suStone,stone:BIRTHSTONES[suMoon][suStone][0]};
-  save(); $('setupov').classList.remove('show'); renderStoneChip(); checkBirthday();
+  save(); renderStoneChip(); checkBirthday();
   toast('Your Lífsteinn: '+D.profile.stone+' ✨');
+  suShow(4);
+};
+$('su-back4').onclick=()=>suShow(3);
+$('su-next4').onclick=()=>{
+  const d=$('su-diet').value;
+  if(d&&DIETS[d]){
+    D.macroRule=DIET_RULES[d]||'keto';
+    D.carbMode=(D.macroRule==='keto')?'net':'total';
+    D.calc=D.calc||{}; D.calc.diet=d;
+    save(); renderTargets(); renderMacrosToday(); renderMeals();
+  }
+  suShow(5);
+};
+$('su-back5').onclick=()=>suShow(4);
+$('su-finish').onclick=()=>{
+  save(); applyThreads(); renderThreads();
+  $('setupov').classList.remove('show');
+  toast('Woven in — your Lífsteinn carries your name. 🧵💎');
 };
 function renderStoneChip(){
   const w=$('stonechip'); if(!w) return;
@@ -1866,7 +2225,7 @@ function renderStoneChip(){
     const st=BIRTHSTONES[pf.moon][pf.stoneIdx||0];
     w.innerHTML='<div class="stoneorb" style="'+orbStyle(st)+'"></div><div><b>'+st[0]+'</b><span class="sub"> · '+MOONS[pf.moon]+' Moon, day '+pf.day+'</span></div>';
   } else {
-    w.innerHTML='<div class="stoneorb" style="background:radial-gradient(circle at 35% 30%,#8FA6D6,#3D5CA8 55%,#1E3464)"></div><div><b>Choose your Lífsteinn</b><span class="sub"> · birth Moon &amp; stone</span></div>';
+    w.innerHTML='<div class="stoneorb" style="background:radial-gradient(circle at 35% 30%,#8FA6D6,#3D5CA8 55%,#1E3464)"></div><div><b>Your Lífsteinn awaits</b><span class="sub"> · visit the Steinntaka</span></div>';
   }
   w.onclick=openSetup;
 }
@@ -1875,19 +2234,23 @@ const BDAY_MSGS=[
  ()=>'Happy Birthday! 🎂 The loom turns once more — spend today gently, celebrate loudly. ✨',
  ()=>{ const pf=D.profile, st=(pf&&!pf.skipped&&pf.moon!=null)?BIRTHSTONES[pf.moon][pf.stoneIdx||0][0].toLowerCase():'Lífsteinn'; return 'Happy Birthday! ✨ Your '+st+' has carried your name another year — may the new one shine.'; }
 ];
-function checkBirthday(){
+function showBdayCard(){
   const pf=D.profile; if(!pf||pf.skipped||pf.moon==null) return;
-  const now=new Date();
-  if(now.getMonth()!==pf.moon||now.getDate()!==pf.day) return;
-  if(D.lastBdayKey===todayKey()) return;
-  D.lastBdayKey=todayKey(); delete D.lastBday; save();
-  const st=(!pf.skipped&&pf.moon!=null)?BIRTHSTONES[pf.moon][pf.stoneIdx||0]:null;
+  const st=BIRTHSTONES[pf.moon][pf.stoneIdx||0];
   const sheet=$('bdayov').querySelector('.sheet');
   if(st&&sheet) sheet.style.backgroundImage='linear-gradient(180deg,'+hexA(st[1],.5)+','+hexA(st[2],.5)+')';
   $('bdaymsg').textContent=BDAY_MSGS[Math.floor(Math.random()*BDAY_MSGS.length)]();
   $('bdayov').classList.add('show');
   if(typeof chimeBig==='function') chimeBig();
   for(let i=0;i<3;i++) setTimeout(()=>sparkleBurst($('bdaymsg')),i*350);
+}
+function checkBirthday(){
+  const pf=D.profile; if(!pf||pf.skipped||pf.moon==null) return;
+  const now=new Date();
+  if(now.getMonth()!==pf.moon||now.getDate()!==pf.day) return;
+  if(D.lastBdayKey===todayKey()) return;
+  D.lastBdayKey=todayKey(); delete D.lastBday; save();
+  showBdayCard();
 }
 $('bdayok').onclick=()=>$('bdayov').classList.remove('show');
 
@@ -1926,9 +2289,10 @@ function seedStars(){
       el.appendChild(s); } };
   mk($('hstars'),36,['#E8C766','#BFD4F2','#F4F7FF','#E8C766']);
   mk($('skyfield'),85,['#E8C766','#BFD4F2','#9FE3C0','#F4F7FF','#7C9AE0']);
+  if(typeof seedDreamRewards==='function') seedDreamRewards();
 }
 
-/* ========== AURORA MOON MODE ========== */
+/* ========== AURORA MODE ========== */
 const darkMQ=(window.matchMedia?window.matchMedia('(prefers-color-scheme: dark)'):null);
 function auroraActive(){
   const m=D.auroraMode||'auto';
@@ -1940,14 +2304,14 @@ function applyAurora(){
   const on=auroraActive(), m=D.auroraMode||'auto';
   document.body.classList.toggle('aurora',on);
   const b=$('aurorabtn');
-  if(b){ b.textContent=(m==='auto'?'🌗':m==='on'?'🌌':'☀️'); b.classList.toggle('on',on); b.title=(m==='auto'?'Theme: follows device':m==='on'?'Aurora Moon: always on':'Aurora Moon: off'); }
+  if(b){ b.textContent=(m==='auto'?'🌗':m==='on'?'🌌':'☀️'); b.classList.toggle('on',on); b.title=(m==='auto'?'Theme: follows device':m==='on'?'Aurora Mode: always on':'Aurora Mode: off'); }
   const tm=document.querySelector('meta[name="theme-color"]'); if(tm) tm.setAttribute('content', on?'#0C1322':'#1E3464');
 }
 if(darkMQ){ try{ darkMQ.addEventListener('change',applyAurora); }catch(e){ try{ darkMQ.addListener(applyAurora); }catch(e2){} } }
 if($('aurorabtn')) $('aurorabtn').onclick=()=>{
   const order=['auto','on','off'];
   D.auroraMode=order[(order.indexOf(D.auroraMode||'auto')+1)%3]; save(); applyAurora();
-  toast(D.auroraMode==='auto'?'Theme follows your device 🌗':D.auroraMode==='on'?'Aurora Moon: always on 🌌':'Aurora Moon: off ☀️');
+  toast(D.auroraMode==='auto'?'Theme follows your device 🌗':D.auroraMode==='on'?'Aurora Mode: always on 🌌':'Aurora Mode: off ☀️');
 };
 
 /* ========== BACKUP NAG ========== */
@@ -2025,15 +2389,15 @@ function renderSymptoms(){
 
 /* ========== v21: CSV EXPORT (doctor/spreadsheet-friendly) ========== */
 function exportCSV(){
-  const dates=new Set(Object.keys(D.days).concat(Object.keys(D.meals)));
+  const dates=new Set(Object.keys(D.days).concat(Object.keys(D.meals)).concat(Object.keys(D.sleep||{})));
   (D.cycleDays||[]).forEach(k=>dates.add(k));
   (D.measures||[]).forEach(m=>dates.add(keyOf(new Date(m.date))));
-  const rows=[['date','kcal','protein_g','net_carbs_g','total_carbs_g','fat_g','water_ml','study_min','exercise_min','steps','mood_1to5','weave_score','fasted_h','weight_kg','period','symptoms','note']];
+  const rows=[['date','kcal','protein_g','net_carbs_g','total_carbs_g','fat_g','water_ml','study_min','exercise_min','steps','mood_1to5','weave_score','fasted_h','sleep_h','sleep_quality','weight_kg','period','symptoms','note']];
   [...dates].sort().forEach(k=>{
     const d=D.days[k]||{}, m=dayMacros(k);
     const meas=(D.measures||[]).find(x=>keyOf(new Date(x.date))===k&&x.w!==undefined);
     const symp=d.symp?SYMPTOMS.filter(([id])=>d.symp[id]).map(x=>x[0]).join('|'):'';
-    rows.push([k,m.kcal.toFixed(0),m.p.toFixed(1),m.nc.toFixed(1),m.c.toFixed(1),m.f.toFixed(1),d.water||0,d.study||0,d.exercise||0,d.steps||0,d.mood||'',weaveScore(k),fastedHours(k).toFixed(1),meas?meas.w:'',(D.cycleDays||[]).includes(k)?1:0,symp,'"'+String(d.notes||'').replace(/"/g,'""')+'"']);
+    rows.push([k,m.kcal.toFixed(0),m.p.toFixed(1),m.nc.toFixed(1),m.c.toFixed(1),m.f.toFixed(1),d.water||0,d.study||0,d.exercise||0,d.steps||0,d.mood||'',weaveScore(k),fastedHours(k).toFixed(1),(D.sleep&&D.sleep[k]?sleepDur(D.sleep[k]).toFixed(1):''),(D.sleep&&D.sleep[k]?(D.sleep[k].q||''):''),meas?meas.w:'',(D.cycleDays||[]).includes(k)?1:0,symp,'"'+String(d.notes||'').replace(/"/g,'""')+'"']);
   });
   const blob=new Blob([rows.map(r=>r.join(',')).join('\n')],{type:'text/csv'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
@@ -2064,6 +2428,13 @@ function renderInsights(){
     const a=avgOf(fOn), b=avgOf(fOff);
     if(Math.abs(a-b)>=0.3) lines.push('⏳ Mood averages <b>'+a.toFixed(1)+'</b> on fasting days (12 h+) vs <b>'+b.toFixed(1)+'</b> on eating days.');
   }
+  /* mood vs sleep duration */
+  const slOn=[],slOff=[];
+  keys.forEach(k=>{ const d=D.days[k], e=(D.sleep||{})[k]; if(d&&d.mood&&e){ const h=sleepDur(e); if(h!=null) (h>=7?slOn:slOff).push(d.mood); } });
+  if(slOn.length>=4&&slOff.length>=4){
+    const a=avgOf(slOn), b=avgOf(slOff);
+    if(Math.abs(a-b)>=0.3) lines.push('🌙 Mood averages <b>'+a.toFixed(1)+'</b> after 7+ hours of sleep vs <b>'+b.toFixed(1)+'</b> after shorter nights.');
+  }
   /* strongest weekday by weave */
   const wk=[[],[],[],[],[],[],[]];
   keys.forEach(k=>{ const s=weaveScore(k); if(s>0) wk[new Date(k+'T00:00').getDay()].push(s); });
@@ -2082,7 +2453,7 @@ function renderInsights(){
     });
     if(pre.length>=3&&other.length>=3){
       const a=avgOf(pre), b=avgOf(other);
-      if(a>b*1.3) lines.push('🫧 Symptoms cluster in the <b>5 days before</b> your period ('+a.toFixed(1)+' vs '+b.toFixed(1)+' per day) — classic luteal pattern, useful for a doctor.');
+      if(a>b*1.3) lines.push('🩺 Symptoms cluster in the <b>5 days before</b> your period ('+a.toFixed(1)+' vs '+b.toFixed(1)+' per day) — classic luteal pattern, useful for a doctor.');
     }
   }
   /* weight over 30 days */
@@ -2101,6 +2472,223 @@ function renderInsights(){
 function askNotifyPermission(){
   try{ if('Notification' in window&&Notification.permission==='default') Notification.requestPermission(); }catch(e){}
 }
+/* ========== v25: RECIPES (per-serving accurate home cooking) ========== */
+let recEdit=null; /* {name,serv,items:[{name,k,p,c,fb,f,g}],idx?} */
+function recTotals(items){
+  const t={g:0,kcal:0,p:0,c:0,fb:0,f:0};
+  items.forEach(it=>{ const r=it.g/100; t.g+=it.g; t.kcal+=it.k*r; t.p+=it.p*r; t.c+=it.c*r; t.fb+=it.fb*r; t.f+=it.f*r; });
+  return t;
+}
+function renderRecipes(){
+  const w=$('reclist'); if(!w) return;
+  if(!(D.recipes||[]).length){ w.innerHTML='<div class="sub">No recipes yet — build one from your ingredients.</div>'; return; }
+  w.innerHTML='';
+  D.recipes.forEach((rc,idx)=>{
+    const t=recTotals(rc.items), sv=Math.max(1,rc.serv), r=document.createElement('div'); r.className='taskrow';
+    const perK=(t.kcal/sv).toFixed(0), perP=(t.p/sv).toFixed(0), perC=((D.carbMode==='total'?t.c:Math.max(0,t.c-t.fb))/sv).toFixed(1), perF=(t.f/sv).toFixed(0);
+    r.innerHTML='<div class="tn"><b>'+esc(rc.name)+'</b><br><span class="sub">per serving: '+perK+' kcal · P'+perP+' · '+carbAbbr()+perC+' · F'+perF+' · ~'+Math.round(t.g/sv)+' g</span></div>'+
+      '<button class="mini" data-a="log">Log</button><button class="mini" data-a="edit">✎</button><button class="mini danger" data-a="del">✕</button>';
+    r.querySelector('[data-a=log]').onclick=()=>{
+      if(t.g<=0) return toast('This recipe has no ingredients yet');
+      selFood={name:rc.name+' (recipe)',k:+(t.kcal/t.g*100).toFixed(1),p:+(t.p/t.g*100).toFixed(2),c:+(t.c/t.g*100).toFixed(2),fb:+(t.fb/t.g*100).toFixed(2),f:+(t.f/t.g*100).toFixed(2)};
+      $('selname').textContent=rc.name+' (1 serving ≈ '+Math.round(t.g/sv)+' g)';
+      $('fgrams').value=Math.round(t.g/sv); $('funit').value='g';
+      $('amtrow').style.display='flex';
+      window.scrollTo({top:0,behavior:'smooth'}); toast('One serving prefilled — adjust grams for more or less');
+    };
+    r.querySelector('[data-a=edit]').onclick=()=>{ openRecBuilder(idx); };
+    r.querySelector('[data-a=del]').onclick=()=>{
+      const gone=D.recipes.splice(idx,1)[0]; save(); renderRecipes();
+      undoToast('Deleted "'+gone.name+'"',()=>{ D.recipes.splice(Math.min(idx,D.recipes.length),0,gone); save(); renderRecipes(); toast('Rewoven 🧵'); });
+    };
+    w.appendChild(r);
+  });
+}
+function openRecBuilder(idx){
+  const rc=(idx!=null)?D.recipes[idx]:null;
+  recEdit={name:rc?rc.name:'',serv:rc?rc.serv:4,items:rc?rc.items.map(x=>Object.assign({},x)):[],idx:idx};
+  $('rec-name').value=recEdit.name; $('rec-serv').value=recEdit.serv;
+  $('rec-search').value=''; $('rec-results').innerHTML='';
+  $('recbuilder').style.display='block'; $('rec-new').style.display='none';
+  renderRecItems();
+}
+function renderRecItems(){
+  const w=$('rec-items'); w.innerHTML='';
+  recEdit.items.forEach((it,i)=>{
+    const r=document.createElement('div'); r.className='taskrow';
+    r.innerHTML='<div class="tn">'+esc(it.name)+'</div><input type="number" value="'+it.g+'" min="1" style="width:70px"><span class="sub" style="align-self:center">g</span><button class="mini danger">✕</button>';
+    r.querySelector('input').oninput=e=>{ it.g=Math.max(1,+e.target.value||1); renderRecTotals(); };
+    r.querySelector('.danger').onclick=()=>{ recEdit.items.splice(i,1); renderRecItems(); };
+    w.appendChild(r);
+  });
+  renderRecTotals();
+}
+function renderRecTotals(){
+  const t=recTotals(recEdit.items), sv=Math.max(1,+$('rec-serv').value||1);
+  $('rec-totals').innerHTML=recEdit.items.length?
+    'Whole pot: <b>'+t.kcal.toFixed(0)+'</b> kcal · '+Math.round(t.g)+' g<br>Per serving (÷'+sv+'): <b>'+(t.kcal/sv).toFixed(0)+'</b> kcal · P '+(t.p/sv).toFixed(1)+' · '+carbAbbr()+' '+((D.carbMode==='total'?t.c:Math.max(0,t.c-t.fb))/sv).toFixed(1)+' · F '+(t.f/sv).toFixed(1):'';
+}
+if($('rec-new')){
+  $('rec-new').onclick=()=>openRecBuilder(null);
+  $('rec-serv').oninput=renderRecTotals;
+  $('rec-cancel').onclick=()=>{ recEdit=null; $('recbuilder').style.display='none'; $('rec-new').style.display=''; };
+  $('rec-search').oninput=e=>{
+    const q=e.target.value.trim().toLowerCase(), box=$('rec-results');
+    if(q.length<2){ box.innerHTML=''; return; }
+    const hits=allFoods().filter(f=>f.name.toLowerCase().includes(q)).slice(0,6);
+    box.innerHTML='';
+    hits.forEach(f=>{
+      const r=document.createElement('div'); r.className='res';
+      r.innerHTML='<span>'+esc(f.name)+'</span><span class="rm">'+f.k+' kcal/100g</span>';
+      r.onclick=()=>{ recEdit.items.push({name:f.name,k:f.k,p:f.p,c:f.c,fb:f.fb,f:f.f,g:100}); $('rec-search').value=''; box.innerHTML=''; renderRecItems(); };
+      box.appendChild(r);
+    });
+  };
+  $('rec-save').onclick=()=>{
+    const n=$('rec-name').value.trim();
+    if(!n) return toast('Name the dish first');
+    if(!recEdit.items.length) return toast('Add at least one ingredient');
+    const rc={name:n,serv:Math.max(1,+$('rec-serv').value||1),items:recEdit.items};
+    if(recEdit.idx!=null) D.recipes[recEdit.idx]=rc; else D.recipes.unshift(rc);
+    save(); renderRecipes();
+    recEdit=null; $('recbuilder').style.display='none'; $('rec-new').style.display='';
+    toast('Recipe kept — the pot remembers 🍳');
+  };
+}
+
+/* ========== v25: DREAM WEAVE (the owner's own idea, finally woven) ========== */
+const QMOONS=['🌑','🌒','🌓','🌔','🌕'];
+const DW_REWARDS=[
+  [3,'ten more stars join the sky'],
+  [7,'a golden star rises'],
+  [14,'a shooting star begins to streak past'],
+  [30,'a crescent moon rises'],
+  [60,'the sky deepens — eighteen more stars'],
+  [100,'a comet joins the night']
+];
+function seedDreamRewards(){
+  const n=Object.keys(D.sleep||{}).length;
+  ['hstars','skyfield'].forEach(id=>{
+    const el=$(id); if(!el||!el.querySelectorAll) return;
+    el.querySelectorAll('.dwstar').forEach(x=>x.remove&&x.remove());
+    const put=(txt,cls,css)=>{ const sp=document.createElement('span'); sp.className='dwstar'+(cls?' '+cls:''); sp.textContent=txt; sp.style.cssText=css; el.appendChild(sp); };
+    const scatter=(cnt,cols)=>{ for(let i=0;i<cnt;i++) put(['✦','✧','⋆','✵'][i%4],'','top:'+(Math.random()*100)+'%;left:'+(Math.random()*100)+'%;--d:'+(2.5+Math.random()*5).toFixed(1)+'s;--delay:-'+(Math.random()*7).toFixed(1)+'s;--sz:'+(Math.random()*0.7+0.35).toFixed(2)+'rem;--col:'+cols[i%cols.length]); };
+    const big=(id==='skyfield');
+    if(n>=3) scatter(big?10:5,['#E8C766','#F4F7FF']);
+    if(n>=60) scatter(big?18:8,['#9FE3C0','#E8C766','#BFD4F2']);
+    if(n>=7) put('✦','gold','top:'+(12+Math.random()*38)+'%;left:'+(5+Math.random()*88)+'%;--d:6s;--sz:1.15rem;--col:#FFD873');
+    if(n>=30) put('🌙','moon','top:'+(6+Math.random()*18)+'%;left:'+(10+Math.random()*76)+'%;--d:9s;--sz:1.05rem;--col:#E8C766');
+    if(n>=14) put('✦','shoot','');
+    if(n>=100) put('☄️','comet','');
+  });
+}
+let dwQ=3, dwEditKey=null;
+const QLABELS=['restless','light','fair','restful','deep'];
+function sleepDur(e){ if(!e||!e.bed||!e.wake) return null;
+  const [bh,bm]=e.bed.split(':').map(Number), [wh,wm]=e.wake.split(':').map(Number);
+  let h=(wh+wm/60)-(bh+bm/60); if(h<=0) h+=24; return h;
+}
+function durStr(h){ return Math.floor(h)+' h '+String(Math.round((h%1)*60)).padStart(2,'0')+' m'; }
+function starPos(key,i,W,H){ /* deterministic twinkle-spread from date key */
+  let a=0; for(const ch of key) a=(a*31+ch.charCodeAt(0))>>>0;
+  return {x:8+((a>>3)%(W-16)), y:8+((a>>9)%(H-16))};
+}
+function renderDreamWeave(){
+  if(!$('dreamcard')) return;
+  const keys=Object.keys(D.sleep||{}).sort();
+  const n=keys.length;
+  $('dw-count').textContent=n?n+' night'+(n===1?'':'s')+' woven':'';
+  buildQPicker();
+  /* today's state */
+  const tk=todayKey(), today=(D.sleep||{})[tk];
+  if(today){
+    $('dw-form').style.display='none'; $('dw-done').style.display='block';
+    const recent=keys.slice(-7).map(k=>sleepDur(D.sleep[k])).filter(Boolean);
+    const avg=recent.length?recent.reduce((a,b)=>a+b,0)/recent.length:null;
+    $('dw-done').innerHTML='Last night: <b>'+durStr(sleepDur(today))+'</b> '+QMOONS[(today.q||3)-1]+
+      (avg?' · 7-night avg <b>'+durStr(avg)+'</b>':'')+
+      (today.dream?'<br><span style="font-family:\u0027Winky Rough\u0027,cursive">\u201c'+esc(today.dream)+'\u201d</span>':'')+
+      ' <button class="mini" id="dw-edit" style="margin-left:6px">✎</button>';
+    $('dw-edit').onclick=()=>dwStartEdit(tk);
+  } else { $('dw-form').style.display='block'; $('dw-done').style.display='none'; }
+  if(!dwEditKey&&$('dw-save')) $('dw-save').textContent='Weave the night 🌙';
+  renderDWList();
+  /* the sky: one star per woven night (last 90), brightness = depth */
+  const W=320,H=88, shown=keys.slice(-90);
+  $('dw-sky').innerHTML=shown.length?'<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;background:linear-gradient(180deg,#0D1A36,#23407A);border-radius:12px;margin-top:10px">'+
+    shown.map((k,i)=>{ const p=starPos(k,i,W,H), e=D.sleep[k], qq=(e.q||3);
+      return '<circle cx="'+p.x+'" cy="'+p.y+'" r="'+(1.2+qq*0.45)+'" fill="#E8C766" opacity="'+(0.4+qq*0.12)+'"/>';
+    }).join('')+
+    (n>=7?'<text x="'+(W-24)+'" y="18" font-size="13" fill="#FFD873" style="text-shadow:0 0 6px #FFD873">✦</text>':'')+
+    (n>=30?'<text x="12" y="20" font-size="13">🌙</text>':'')+
+    (n>=100?'<text x="'+(W/2)+'" y="14" font-size="11">☄️</text>':'')+
+    '</svg>':'';
+  /* the sky's milestones — each one adds something real to the app */
+  const cw=$('dw-const');
+  cw.innerHTML=DW_REWARDS.map(([need,desc])=>{
+    const got=n>=need;
+    return '<div style="font-size:12.5px;line-height:1.9;'+(got?'':'opacity:.55')+'">'+
+      (got?'<b style="color:#C9A227">✓</b>':'·')+' <b>'+need+' night'+(need===1?'':'s')+'</b> — '+desc+(got?' ✨':'')+'</div>';
+  }).join('');
+}
+function buildQPicker(){ /* chips only — never touches form visibility */
+  const q=$('dw-q'); if(!q) return;
+  q.innerHTML='';
+  QMOONS.forEach((m,i)=>{
+    const b=document.createElement('button'); b.className='chip'+(dwQ===i+1?' on':'');
+    b.innerHTML=m+'<br><span style="font-size:10px;font-weight:700">'+QLABELS[i]+'</span>';
+    b.style.cssText='flex:1;text-align:center;line-height:1.35;padding:6px 2px';
+    b.title=QLABELS[i];
+    b.onclick=()=>{ dwQ=i+1; buildQPicker(); };
+    q.appendChild(b);
+  });
+}
+function dwStartEdit(k){
+  const e=(D.sleep||{})[k]||{bed:'21:00',wake:'05:00',q:3,dream:''};
+  dwEditKey=k; dwQ=e.q||3;
+  $('dw-bed').value=e.bed; $('dw-wake').value=e.wake; $('dw-dream').value=e.dream||'';
+  $('dw-done').style.display='none'; $('dw-form').style.display='block';
+  $('dw-save').textContent=(k===todayKey())?'Weave the night 🌙':'Reweave '+new Date(k+'T00:00').toLocaleDateString(undefined,{month:'short',day:'numeric'})+' 🌙';
+  buildQPicker();
+}
+function renderDWList(){
+  const w=$('dw-list'); if(!w) return;
+  const keys=Object.keys(D.sleep||{}).sort().reverse().slice(0,7);
+  if(!keys.length){ w.innerHTML='<div class="sub">No nights woven yet.</div>'; return; }
+  w.innerHTML='';
+  keys.forEach(k=>{
+    const e=D.sleep[k], r=document.createElement('div'); r.className='taskrow';
+    r.innerHTML='<div class="tn">'+new Date(k+'T00:00').toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'})+
+      ' · <b>'+durStr(sleepDur(e))+'</b> '+QMOONS[(e.q||3)-1]+
+      (e.dream?'<br><span class="sub" style="font-family:\u0027Winky Rough\u0027,cursive">\u201c'+esc(e.dream.length>44?e.dream.slice(0,44)+'\u2026':e.dream)+'\u201d</span>':'')+'</div>'+
+      '<button class="mini" data-a="edit">✎</button><button class="mini danger" data-a="del">✕</button>';
+    r.querySelector('[data-a=edit]').onclick=()=>dwStartEdit(k);
+    r.querySelector('[data-a=del]').onclick=()=>{
+      const gone=D.sleep[k]; delete D.sleep[k]; save(); renderDreamWeave();
+      if(typeof seedDreamRewards==='function') seedDreamRewards();
+      undoToast('Night unwoven',()=>{ D.sleep[k]=gone; save(); renderDreamWeave(); if(typeof seedDreamRewards==='function') seedDreamRewards(); toast('Rewoven 🌙'); });
+    };
+    w.appendChild(r);
+  });
+}
+if($('dw-save')) $('dw-save').onclick=()=>{
+  const bed=$('dw-bed').value, wake=$('dw-wake').value;
+  if(!bed||!wake) return toast('When did the night begin and end?');
+  const tgt=dwEditKey||todayKey();
+  const before=Object.keys(D.sleep||{}).length;
+  D.sleep=D.sleep||{};
+  const isNew=!D.sleep[tgt];
+  D.sleep[tgt]={bed:bed,wake:wake,q:dwQ,dream:$('dw-dream').value.trim()};
+  save();
+  const after=Object.keys(D.sleep).length;
+  const hit=DW_REWARDS.find(([need])=>before<need&&after>=need);
+  const savedDur=durStr(sleepDur(D.sleep[tgt]));
+  dwEditKey=null; $('dw-dream').value='';
+  renderDreamWeave();
+  if(hit&&isNew){ if(typeof seedDreamRewards==='function') seedDreamRewards(); toast('✨ The sky grows: '+hit[1]+' 🌟'); }
+  else toast('Night woven — '+savedDur+' 🌙');
+};
+
 /* ========== v22: MEAL PHOTOS (ephemeral — released each Gem Day) ==========
    Photos live in their OWN storage key (not the main data / JSON backups),
    compressed hard, held ~1 week, baked into the Gem Day card, then released. */
