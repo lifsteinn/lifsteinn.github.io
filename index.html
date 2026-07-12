@@ -399,7 +399,7 @@
       </div>
       <details id="donetasks-wrap" style="display:none"><summary>Completed</summary><div id="donetasks"></div></details>
     </div>
-    <div class="card">
+    <div class="card" id="macroscard">
       <h2>🍲 Today's macros <span class="sub" id="carbsub">net carbs = carbs − fiber</span><button class="infobtn" data-info="macros">ⓘ</button></h2>
       <div class="infobox" id="info-macros"></div>
       <div class="macrogrid" id="macros-today"></div>
@@ -420,13 +420,14 @@
       <div class="infobox" id="info-weave"></div>
       <div class="habit"><div class="emoji">📖</div><div class="grow"><div class="name">Language &amp; letters</div><div class="meta">study, reading, writing · minutes today</div></div><input type="number" id="h-study" min="0" placeholder="0"></div>
       <div class="habit"><div class="emoji">💪</div><div class="grow"><div class="name">Exercise</div><div class="meta">any movement counts · minutes</div></div><input type="number" id="h-exercise" min="0" placeholder="0"></div>
+      <div class="habit"><div class="emoji">👣</div><div class="grow"><div class="name">Steps today</div><div class="meta">total steps for today</div></div><input type="number" id="h-steps" min="0" placeholder="0"></div>
       <div class="habit"><div class="emoji">📚</div><div class="grow"><div class="name">Other learning</div><div class="meta">reading, courses, research</div></div><button class="check" id="h-learning">✓</button></div>
       <div class="habit"><div class="emoji">🛠️</div><div class="grow"><div class="name">Personal project</div><input type="text" id="h-project" placeholder="what did you work on?"></div><button class="check" id="h-projdone">✓</button></div>
       <div class="weavebar"><div class="track"><div class="fill" id="weavefill"></div></div><div class="label" id="weavelabel">0 / 5</div></div>
       <div class="gentle">Weave = study + exercise + macros met + learning + project.<br>3+ threads = a strong day 🧵</div>
     </div>
-    <div class="card">
-      <h2>💪 Workouts &amp; steps <span class="sub" id="burntoday"></span></h2>
+    <div class="card" id="workoutcard">
+      <h2>💪 Workouts <span class="sub" id="burntoday"></span></h2>
       <div class="addrow" style="margin-top:0">
         <select id="ex-type" style="flex:1"></select>
       </div>
@@ -436,11 +437,6 @@
         <button class="mini" id="ex-add">Add</button>
       </div>
       <div id="exlist"></div>
-      <div class="habit" style="border-bottom:none;border-top:1px dashed var(--mist);margin-top:6px">
-        <div class="emoji">👣</div>
-        <div class="grow"><div class="name">Steps today</div><div class="meta">total steps for today</div></div>
-        <input type="number" id="h-steps" min="0" placeholder="0" style="width:84px">
-      </div>
       <div class="gentle">Burn estimates come from standard formulas (METs × your weight) — rough by nature.</div>
     </div>
     <div class="card">
@@ -735,7 +731,7 @@
     <div class="card">
       <h2>🧵 Threads <span class="sub">choose what Lífsteinn weaves for you</span></h2>
       <div class="addrow" id="threadrow" style="flex-wrap:wrap;margin-top:0"></div>
-      <div class="gentle">Hiding a thread only tucks it away — its data stays safe and it can be rewoven any time. If the food or fasting threads ever feel heavier than helpful, resting them is a kind choice. 💙</div>
+      <div class="gentle">Hiding a thread only tucks it away — its data stays safe and it can be rewoven any time. If the food or fasting threads ever feel heavier than helpful, resting them is a kind choice. 💙<br>Resting the food thread also rests the macros and workout cards; Body and Cycle share a tab, which stays as long as either is woven.</div>
     </div>
     <div class="card">
       <h2>💾 Backup &amp; restore</h2>
@@ -750,7 +746,7 @@
   </section>
 
   <section class="tab" id="tab-body">
-    <div class="card">
+    <div class="card" id="measurecard">
       <h2>📏 Measurements <button class="chip unitchip" id="unitbtn" style="margin-left:auto">kg · cm</button></h2>
       <div class="mgrid">
         <div><label id="lbl-w">Weight kg</label><input type="number" id="m-w" step="0.1"></div>
@@ -963,7 +959,7 @@ document.querySelectorAll('.infobtn').forEach(b=>{
 });
 
 /* ========== THREADS (choose what Lífsteinn weaves) ========== */
-const THREADS=[['food','🍲 Food'],['fast','⏳ Fasting'],['cycle','🩸 Cycle'],['sleep','🌙 Dream Weave'],['pcos','🌸 PCOS notes'],['whtr','📐 Waist-to-height']];
+const THREADS=[['food','🍲 Food'],['fast','⏳ Fasting'],['body','📏 Measurements'],['cycle','🩸 Cycle'],['sleep','🌙 Dream Weave'],['pcos','🌸 PCOS notes'],['whtr','📐 Waist-to-height']];
 const THREADS_OPTIN=['whtr'];
 function threadOn(id){ const t=D.threads||{}; if(id in t) return t[id]!==false; return THREADS_OPTIN.indexOf(id)===-1; }
 function renderThreads(){
@@ -982,6 +978,15 @@ function applyThreads(){
     if(b){ b.style.display=threadOn(id)?'':'none';
       if(!threadOn(id)&&b.classList.contains('on')){ const t=document.querySelector('button[data-tab="today"]'); if(t) t.click(); } }
   });
+  /* resting the food thread also rests the calorie-facing cards on Today */
+  const mc=$('macroscard'); if(mc) mc.style.display=threadOn('food')?'':'none';
+  const wc=$('workoutcard'); if(wc) wc.style.display=threadOn('food')?'':'none';
+  /* Body & Cycle share a tab — it stays as long as either thread is woven */
+  const bc=$('measurecard'); if(bc) bc.style.display=threadOn('body')?'':'none';
+  const bt=document.querySelector('button[data-tab="body"]');
+  if(bt){ const show=threadOn('body')||threadOn('cycle');
+    bt.style.display=show?'':'none';
+    if(!show&&bt.classList.contains('on')){ const t=document.querySelector('button[data-tab="today"]'); if(t) t.click(); } }
   const cc=$('cyclecard'); if(cc) cc.style.display=threadOn('cycle')?'':'none';
   const dc=$('dreamcard'); if(dc) dc.style.display=threadOn('sleep')?'':'none';
   if(typeof renderWHtR==='function') renderWHtR();
@@ -996,13 +1001,13 @@ const PROVERBS=[['Eitt líf, margir þræðir.','One life, many threads. — mot
 ['Kjarkur, viska, hjarta.','Courage, wisdom, heart. — inscription of the 10þ'],
 ['Tengdir frá upphafi.','Bound from the beginning. — inscription of the 100þ'],
 ['To rule is to weave.','Each thread a decision, each knot a sacrifice. — Ingrún, progenitor of Hverdalr'],
-['A ruler\'s duty is not to reign,','but to safeguard, nurture, and endure. — Ingrún'],
-['If you are to rule, rule well.','— Prince Ingivar, in his foreword'],
+['A ruler\'s duty is not to reign,','but to safeguard, nurture, and endure. — Ingrún, progenitor of Hverdalr'],
+['If you are to rule, rule well.','— Ingivar of Hverdalr, in his foreword'],
 ['There is always room at the loom.','— saying of the Hverlands schools'],
-['The weave holds every thread.','Even the ones that pull ahead. — Prince Ingivar'],
-['You have a century to work things out.','Be gentle with the ones who cannot yet believe it. — Prince Ingivar'],
+['The weave holds every thread.','Even the ones that pull ahead. — Ingivar of Hverdalr'],
+['You have a century to work things out.','Be gentle with the ones who cannot yet believe it. — Ingivar of Hverdalr'],
 ['A test measures knowledge.','Only a teacher judges readiness. — Hverlands schools'],
-['Learn the land with your feet.','It teaches what words alone cannot. — Prince Ingivar'],
+['Learn the land with your feet.','It teaches what words alone cannot. — Ingivar of Hverdalr'],
 ['To be of Hverdalr is to hold many threads—','and weave them into strength.'],
 ['To be of Hvergil is to root deep,','guard fiercely, and endure with grace.'],
 ['To be of Regalis is to question deeply,','wield wisely, and never stop seeking.'],
@@ -1011,9 +1016,9 @@ const PROVERBS=[['Eitt líf, margir þræðir.','One life, many threads. — mot
 ['To be of Seigr is to carry discipline like a blade—','silent, sharp, and unshaken.'],
 ['To be of Zefirano is to live unbound,','race with the wind, and never ask permission.'],
 ['To be of Howell is to outwit gently,','shine brightly, and guide with a steadfast heart.']];
-let pvIdx=new Date().getDate()%PROVERBS.length;
+let pvIdx=Math.floor(Math.random()*PROVERBS.length);
 const renderProverb=()=>{$('pv-jp').textContent=PROVERBS[pvIdx][0];$('pv-en').textContent=PROVERBS[pvIdx][1];};
-$('proverb').onclick=()=>{pvIdx=(pvIdx+1)%PROVERBS.length;renderProverb();};
+$('proverb').onclick=()=>{ let n; do{ n=Math.floor(Math.random()*PROVERBS.length); }while(n===pvIdx&&PROVERBS.length>1); pvIdx=n; renderProverb(); };
 
 /* ========== FOOD DATABASE (category, name, kcal, protein, carbs, fiber, fat per 100 g) ========== */
 const FOODS=[
