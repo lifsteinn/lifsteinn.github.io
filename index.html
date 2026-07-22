@@ -214,6 +214,11 @@
   header>*:not(.starfield):not(.htools){position:relative;z-index:1}
   #skyfield{display:none}
   body.aurora #skyfield{display:block}
+  body.stargaze main,body.stargaze header,body.stargaze nav{opacity:0;pointer-events:none;transition:opacity 1.4s ease}
+  main,header,nav{transition:opacity .9s ease}
+  #stargazehint{display:none;position:fixed;bottom:30px;left:0;right:0;text-align:center;color:#BFD4F2;font-size:13px;z-index:60;font-family:'Alegreya SC',serif;letter-spacing:.1em;text-shadow:0 0 8px rgba(13,26,54,.9)}
+  body.stargaze #stargazehint{display:block;animation:hintfade 7s ease forwards}
+  @keyframes hintfade{0%,55%{opacity:.8}100%{opacity:.1}}
   main,.tabbar{position:relative;z-index:2}
   .gdue{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--sun);font-weight:600;white-space:nowrap}
   .moonlore{font-size:12px;color:var(--mut);font-style:italic;text-align:center;margin:2px 0 10px;line-height:1.45}
@@ -463,6 +468,7 @@
         <button class="primary" id="dw-save" style="width:100%;margin-top:10px">Weave the night 🌙</button>
       </div>
       <div id="dw-sky"></div>
+      <button class="mini" id="stargazebtn" style="width:100%;margin-top:8px">🔭 Stargaze — just the sky, for a while</button>
       <details style="margin-top:8px">
         <summary style="font-size:13px;font-weight:700;color:var(--mut);cursor:pointer">🗒️ Recent nights</summary>
         <div id="dw-list" style="margin-top:8px"></div>
@@ -848,6 +854,7 @@
   </div>
 </div></div>
 
+<div id="stargazehint">tap anywhere to return 🌙</div>
 <div class="overlay" id="aboutov"><div class="sheet">
   <div style="text-align:center;font-size:38px">📜</div>
   <h2 style="justify-content:center">What is Lífsteinn?</h2>
@@ -900,7 +907,8 @@ const store={
   async save(d){
     const v=JSON.stringify(d); memStore=d;
     try{ if(window.storage&&window.storage.set){ await window.storage.set(KEY,v); return; } }catch(e){}
-    try{ localStorage.setItem(KEY,v); }catch(e){}
+    try{ localStorage.setItem(KEY,v); }
+    catch(e){ try{ toast('⚠️ Could not save — storage full. Download a Gem Day card or a backup to free space.'); }catch(_){} }
   }
 };
 
@@ -995,19 +1003,25 @@ function applyThreads(){
 }
 
 /* ========== PROVERBS ========== */
-const PROVERBS=[['Eitt líf, margir þræðir.','One life, many threads. — motto of the þráður'],
-['Saman blómstrum vér.','We bloom together. — coin inscription'],
-['Alltaf áfram.','Always forward. — inscription of the 50þ'],
-['Kjarkur, viska, hjarta.','Courage, wisdom, heart. — inscription of the 10þ'],
-['Tengdir frá upphafi.','Bound from the beginning. — inscription of the 100þ'],
-['To rule is to weave.','Each thread a decision, each knot a sacrifice. — Ingrún, progenitor of Hverdalr'],
-['A ruler\'s duty is not to reign,','but to safeguard, nurture, and endure. — Ingrún, progenitor of Hverdalr'],
-['If you are to rule, rule well.','— Ingivar of Hverdalr, in his foreword'],
-['There is always room at the loom.','— saying of the Hverlands schools'],
-['The weave holds every thread.','Even the ones that pull ahead. — Ingivar of Hverdalr'],
-['You have a century to work things out.','Be gentle with the ones who cannot yet believe it. — Ingivar of Hverdalr'],
-['A test measures knowledge.','Only a teacher judges readiness. — Hverlands schools'],
-['Learn the land with your feet.','It teaches what words alone cannot. — Ingivar of Hverdalr'],
+const PROVERBS=[['Eitt líf, margir þræðir.','One life, many threads.'],
+['Saman blómstrum vér.','We bloom together.'],
+['Alltaf áfram.','Always forward.'],
+['Kjarkur, viska, hjarta.','Courage, wisdom, heart.'],
+['Tengdir frá upphafi.','Bound from the beginning.'],
+['To rule is to weave.','Each thread a decision, each knot a sacrifice.'],
+['A ruler\'s duty is not to reign,','but to safeguard, nurture, and endure.'],
+['To lead is to bear the weight of the past','while preparing the loom for the future.'],
+['If you are to rule,','rule well.'],
+['Leadership is not a crown to be worn,','nor a throne to be claimed.'],
+['An inheritance not of wealth or power,','but of knowledge.'],
+['The weave holds every thread.','Even the ones that pull ahead.'],
+['There is always room','at the loom.'],
+['You have a century to work things out.','Be gentle with the ones who cannot yet believe it.'],
+['A test measures knowledge.','Only a teacher judges readiness.'],
+['Learn the land with your feet.','It teaches what words alone cannot.'],
+['You are being prepared for a different duty,','not a higher worth.'],
+['Confuse duty with worth,','and you become a small man in a large chair.'],
+['Water from a well I no longer visit—','it was there, had I been thirsty.'],
 ['To be of Hverdalr is to hold many threads—','and weave them into strength.'],
 ['To be of Hvergil is to root deep,','guard fiercely, and endure with grace.'],
 ['To be of Regalis is to question deeply,','wield wisely, and never stop seeking.'],
@@ -1469,6 +1483,29 @@ function renderFastLog(){
   });
 }
 setInterval(tickFast,1000); setInterval(renderLytes,15000);
+
+/* v22: flush pending debounced saves when the window hides/closes,
+   so an edit made <400ms before closing is never lost */
+function flushSave(){ clearTimeout(saveTimer); try{ store.save(D); }catch(e){} }
+window.addEventListener('pagehide',flushSave);
+document.addEventListener('visibilitychange',()=>{ if(document.hidden) flushSave(); });
+
+/* v22: midnight rollover — an installed app left open past midnight would
+   keep writing to yesterday's key. Reload when the date changes while the
+   app is hidden, or on return to a stale view; if it's visible and in use
+   at midnight, wait for the next hide so we never reload under the user. */
+let liveDay=todayKey();
+setInterval(()=>{ if(todayKey()!==liveDay && document.hidden){ flushSave(); location.reload(); } },30000);
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden && todayKey()!==liveDay){ location.reload(); } });
+
+/* v22: ask the browser to mark this origin's storage as persistent, so it
+   is never auto-evicted under disk pressure. Installed PWAs are near-always
+   granted this silently; if unsupported, nothing happens. */
+try{
+  if(navigator.storage && navigator.storage.persist){
+    navigator.storage.persisted().then(p=>{ if(!p) navigator.storage.persist(); }).catch(()=>{});
+  }
+}catch(e){}
 
 /* fasted hours overlapping a calendar date */
 function fastedHours(k){
@@ -2694,21 +2731,66 @@ if($('dw-save')) $('dw-save').onclick=()=>{
   else toast('Night woven — '+savedDur+' 🌙');
 };
 
+/* ========== STARGAZING MODE (just the sky) ========== */
+let sgPrevAurora=null;
+function enterStargaze(){
+  sgPrevAurora=document.body.classList.contains('aurora');
+  document.body.classList.add('aurora');
+  if(typeof seedDreamRewards==='function') seedDreamRewards();
+  document.body.classList.add('stargaze');
+  setTimeout(()=>{
+    document.addEventListener('click',exitStargaze);
+    document.addEventListener('keydown',sgKeyExit);
+  },700);
+}
+function sgKeyExit(e){ if(e.key==='Escape') exitStargaze(); }
+function exitStargaze(){
+  document.removeEventListener('click',exitStargaze);
+  document.removeEventListener('keydown',sgKeyExit);
+  document.body.classList.remove('stargaze');
+  if(sgPrevAurora===false) document.body.classList.remove('aurora');
+  sgPrevAurora=null;
+}
+if($('stargazebtn')) $('stargazebtn').onclick=(ev)=>{ ev.stopPropagation(); enterStargaze(); };
+
 /* ========== v22: MEAL PHOTOS (ephemeral — released each Gem Day) ==========
    Photos live in their OWN storage key (not the main data / JSON backups),
    compressed hard, held ~1 week, baked into the Gem Day card, then released. */
 var PH={};
 const PHKEY='lifsteinn-photos';
+/* v23: photos live in IndexedDB — the browser's large-object storage
+   (gigabytes, covered by the same persistence flag) — instead of sharing
+   localStorage's ~5MB with the main data. Old photos migrate automatically
+   on first load, freeing that space back to the journal. */
+function idbOpen(){
+  return new Promise((res,rej)=>{
+    const rq=indexedDB.open('lifsteinn',1);
+    rq.onupgradeneeded=()=>{ rq.result.createObjectStore('kv'); };
+    rq.onsuccess=()=>res(rq.result);
+    rq.onerror=()=>rej(rq.error);
+  });
+}
+function idbGet(key){ return idbOpen().then(db=>new Promise((res,rej)=>{ const rq=db.transaction('kv').objectStore('kv').get(key); rq.onsuccess=()=>res(rq.result); rq.onerror=()=>rej(rq.error); })); }
+function idbSet(key,val){ return idbOpen().then(db=>new Promise((res,rej)=>{ const tx=db.transaction('kv','readwrite'); tx.objectStore('kv').put(val,key); tx.oncomplete=()=>res(true); tx.onerror=()=>rej(tx.error); })); }
 const photoStore={
   async load(){
     try{ if(window.storage&&window.storage.get){ try{ const r=await window.storage.get(PHKEY); if(r&&r.value) return JSON.parse(r.value); }catch(e){} return {}; } }catch(e){}
+    try{
+      const v=await idbGet(PHKEY);
+      if(v) return v;
+      /* one-time migration from the old localStorage home */
+      const old=localStorage.getItem(PHKEY);
+      if(old){ const d=JSON.parse(old); await idbSet(PHKEY,d); localStorage.removeItem(PHKEY); return d; }
+      return {};
+    }catch(e){}
     try{ const v=localStorage.getItem(PHKEY); if(v) return JSON.parse(v); }catch(e){}
     return {};
   },
   async save(){
-    const v=JSON.stringify(PH);
-    try{ if(window.storage&&window.storage.set){ await window.storage.set(PHKEY,v); return true; } }catch(e){}
-    try{ localStorage.setItem(PHKEY,v); return true; }
+    try{ if(window.storage&&window.storage.set){ await window.storage.set(PHKEY,JSON.stringify(PH)); return true; } }catch(e){}
+    try{ await idbSet(PHKEY,PH); return true; }catch(e){}
+    /* last-resort fallback if IndexedDB is unavailable */
+    try{ localStorage.setItem(PHKEY,JSON.stringify(PH)); return true; }
     catch(e){ toast('Photo storage is full — download your Gem Day card to release space 📦'); return false; }
   }
 };
@@ -2763,7 +2845,7 @@ if($('photobtn')){
   $('photobtn').onclick=()=>$('photofile').click();
   $('photofile').onchange=async e=>{
     const file=e.target.files[0]; e.target.value=''; if(!file) return;
-    if(photoBytes()>3.5*1048576){ toast('Photo space nearly full — download a Gem Day card to release the week 📦'); return; }
+    if(photoBytes()>25*1048576){ toast('Photo space nearly full — download a Gem Day card to release the week 📦'); return; }
     try{
       const data=await compressImage(file);
       const id='p'+Date.now();
